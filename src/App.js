@@ -1,25 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Hole from './Components/Hole';
+import Home from './Components/Home';
+import NavBar from './Components/NavBar';
+import ScoreCard from './Components/ScoreCard';
+import Start from './Components/Start';
+import Welcome from './Components/Welcome';
+import NewGame from './Components/NewGame';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { AnimatedSwitch } from 'react-router-transition';
+
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <NavBar/>
+      <Route path="/" exact component={Home} />
+      <Route path="/hole/" component={Hole} />
+      <Route path="/scorecard/" component={ScoreCard} />
+      <Route path="/start/" component={Start} />
+      <Route path="/welcome/" component={Welcome} />
+      <Route path="/newgame/" component={NewGame} />
+  </Router>
   );
 }
 
