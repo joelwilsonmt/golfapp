@@ -22,7 +22,8 @@ function Counter(props) {
          
           <OutlinedInput
             variant="outlined"
-            style={{width: "150px", margin: "0px 10px"}}
+            labelWidth={0}
+            style={{margin: "0px 10px"}}
             inputProps={{
                 style: { textAlign: "center"},
               }}

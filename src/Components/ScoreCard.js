@@ -5,23 +5,31 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import GolfCourse from '@material-ui/icons/GolfCourse';
-
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
 
 function ScoreCard(props) {
   let holes = [];
   for (var i = 0; i < 18; i++){
-    holes.push(<li>Hole {i+1}</li>);
+    holes.push(<Typography variant="body1">Hole {i+1}</Typography>);
   }
+  const courseName = props.match.params.courseName;
   return (
+    <div>
+    <Typography align="center" variant="h3">{courseName}</Typography>
     <List>
     {holes.map((hole, i) => 
-      <ListItem key={i+1} button>
+      <div key={i+1}><ListItem button >
         <ListItemIcon>
           <GolfCourse />
         </ListItemIcon>
         <ListItemText primary={<Link to={`/hole/${i+1}`}>{hole}</Link>} />
-      </ListItem>)}
+      </ListItem>
+      {i === holes.length-1 ? null : <Divider variant="fullWidth"/>}
+      </div>
+    )}
     </List>
+    </div>
   );
 }
 

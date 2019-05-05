@@ -2,15 +2,21 @@ import React,  { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import BlockButton from './BlockButton';
 import CustomDialog from './CustomDialog';
+import Loading from './Loading';
 import Grid from '@material-ui/core/Grid';
+import { Redirect } from "react-router-dom";
+import axios from 'axios';
+require('dotenv').config();
 
 function NewGame(props) {
   const [courseNameOpen, toggleCourseName] = useState(false);
   const [courseName, handleCourseName] = useState("");
+  const [loading, toggleLoading] = useState(false);
   const [startOpen, toggleStartOpen] = useState(false);
   const [confirmOpen, toggleConfirmOpen] = useState(false);
   const [thisOne, next] = useState(-1);
   const [playerEntryOpen, togglePlayerEntry] = useState(false);
+  const [redirect, toggleRedirect] = useState(false);
   const [playerName, changePlayerName] = useState("");
   const [playerNames, pushPlayerNames] = useState([]);
   const [numberPlayers, changeNumberPlayers] = useState(0);
@@ -19,6 +25,26 @@ function NewGame(props) {
     let temp = playerNames;
     temp.push(playerName);
     pushPlayerNames(temp);
+  }
+  const addToServer = async () => {
+    toggleLoading(true);
+    const userRoute = process.env.REACT_APP_BACK_END_SERVER + 'user';
+    playerNames.forEach(async (name, i) => {
+    console.log("sending " + name + " to database");
+    localStorage.setItem('name'+i, name);
+    await axios.put(userRoute, {
+      name: name,
+      courseName: courseName,
+      active: true
+    }).then(
+      (res) => {
+        console.log("server access complete, response: ", res);
+        if(i === playerNames.length-1){
+          toggleLoading(false); 
+          toggleRedirect(true);
+        }
+      });
+    });
   }
   const confirm = <div>
   <Typography variant='body1'>Course: {courseName}</Typography>
@@ -29,6 +55,7 @@ function NewGame(props) {
   </div>
   return (
     <div>
+    <Loading open={loading}/>
     <CustomDialog
       open={startOpen}
       title={`Start game with ${numberPlayers} player${numberPlayers === 1 ? "" : "s"}?`}
@@ -91,11 +118,10 @@ function NewGame(props) {
       title={`Does this look right?`}
       content={confirm}
       onClick={() => {
-        console.log("course before moving on: ", courseName);
-        console.log("players: ", playerNames);
+        addToServer();
       }}
       goButton="Begin!"
-      link="/scorecard/"
+      
     />
     <Typography variant='h2'>New Game</Typography>
  
@@ -120,6 +146,8 @@ function NewGame(props) {
       />
 
     </Grid>
+
+    {redirect ? <Redirect to={{ pathname: `/scorecard/${courseName}` }} /> : null}
   </div>
   );
 }

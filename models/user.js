@@ -5,12 +5,33 @@ const findOrCreate = require('mongoose-find-or-create');
 
 let UserSchema = mongoose.Schema(
   {
-    publicAddress: String,
-    avatar: String, //url to picture
-    username: String,
-    contracts: [Object]
+    name: String,
+    games: [{
+      active: Boolean,
+      holes: [{
+        par: Number,
+        score: Number,
+        putts: Number,
+        fairwayHit: Boolean,
+        greensInRegulation: Boolean,
+        picture: { data: Buffer, contentType: String }
+      }],
+      courseName: String,
+      data: Date,
+      location: {
+        type: {
+          type: String, // Don't do `{ location: { type: String } }`
+          enum: ['Point'], // 'location.type' must be 'Point'
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
+      }
+    }]
     },
-    { collection: 'users' });
+    { collection: 'golf' });
 UserSchema.plugin(findOrCreate, { appendToArray: true });
 
 

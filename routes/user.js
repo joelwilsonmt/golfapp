@@ -2,20 +2,20 @@ var express = require("express");
 var router = express.Router();
 
 var User = require('../models/user');
-const findOrCreate = require('mongoose-find-or-create')
+//const findOrCreate = require('mongoose-find-or-create');
 
 
 router.put("/", function(req, res) {
   console.log(
-    "getting user" + " @ " + new Date() + "----------------------------------"
+    "-------------------user route accessed @ " + new Date() + "----------------------------------"
   );
   console.log(req.body);
   var data = req.body;
 
   //findOrCreate({query}, {document to insert}, [options], [callback])
-	User.findOrCreate({ publicAddress: data.publicAddress }, (err, result) => {
+	User.findOrCreate({ name: data.name }, {name: data.name.toLowerCase()}, (err, result) => {
 	if(err){console.log(err);}
-    console.log("successful find user by public address: ", data.publicAddress);
+    console.log("successful find user by name: ", data.name);
     res.status(200).send(result);
   });
 }); //closes router.put
