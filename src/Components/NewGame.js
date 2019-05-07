@@ -9,18 +9,32 @@ import axios from 'axios';
 require('dotenv').config();
 
 function NewGame(props) {
-  const [courseNameOpen, toggleCourseName] = useState(false);
-  const [courseName, handleCourseName] = useState("");
-  const [loading, toggleLoading] = useState(false);
   const [startOpen, toggleStartOpen] = useState(false);
-  const [confirmOpen, toggleConfirmOpen] = useState(false);
-  const [thisOne, next] = useState(-1);
+  const [courseNameOpen, toggleCourseNameOpen] = useState(false);
   const [playerEntryOpen, togglePlayerEntry] = useState(false);
-  const [redirect, toggleRedirect] = useState(false);
+  const [confirmOpen, toggleConfirmOpen] = useState(false);
+  const [loading, toggleLoading] = useState(false);
+
+
+  const [courseName, handleCourseName] = useState("");
   const [playerName, changePlayerName] = useState("");
   const [playerNames, pushPlayerNames] = useState([]);
   const [numberPlayers, changeNumberPlayers] = useState(0);
-  const players = ['One', 'Two', 'Three', 'Four'];
+
+  const [dialogIndex, nextDialog] = useState(-1);
+  const [redirect, toggleRedirect] = useState(false);
+
+  const clearState = () => {
+    changePlayerName("");
+    handleCourseName("");
+    pushPlayerNames([""]);
+    toggleStartOpen(false);
+    toggleCourseNameOpen(false);
+    togglePlayerEntry(false);
+    toggleConfirmOpen(false);
+    console.log("state cleared, coursename: ", courseName);
+    console.log("state cleared, players: ", playerNames);
+  }
   const handlePlayerPush = (playerName) => {
     let temp = playerNames;
     temp.push(playerName);
@@ -31,14 +45,14 @@ function NewGame(props) {
     const userRoute = process.env.REACT_APP_BACK_END_SERVER + 'user';
     playerNames.forEach(async (name, i) => {
     console.log("sending " + name + " to database");
-    localStorage.setItem('name'+i, name);
     await axios.put(userRoute, {
       name: name,
       courseName: courseName,
       active: true
     }).then(
       (res) => {
-        console.log("server access complete, response: ", res);
+        props.game.addUsers(res.data);
+        props.game.setCourse(courseName);
         if(i === playerNames.length-1){
           toggleLoading(false); 
           toggleRedirect(true);
@@ -53,8 +67,29 @@ function NewGame(props) {
       <Typography inline variant='body2' key={key}>{player}{key+1 === playerNames.length ? null : ', '}</Typography>
       )}
   </div>
+
   return (
     <div>
+      <Typography align="center" variant='h2'>New Game</Typography>
+      <Typography align="center" variant='h3'>How Many Players?</Typography>
+      <Grid container spacing={16}>
+        {Array(...Array(4)).map((player, key) =>
+          <BlockButton
+          width={6}
+          key={key+1}
+          title={key+1}
+          onClick={() => 
+            {changeNumberPlayers(key+1);
+            toggleStartOpen(true);
+            nextDialog(-1);}}/>
+        )}
+        <BlockButton
+          width={12}
+          title={"More... Not Working Yet"}
+        />
+      </Grid>
+
+    {/*-------------------------------------------------start dialogs---------------------------------------------*/}  
     <Loading open={loading}/>
     <CustomDialog
       open={startOpen}
@@ -62,8 +97,9 @@ function NewGame(props) {
       toggleOpen={toggleStartOpen}
       onClick={() => {
         toggleStartOpen(false);
-        toggleCourseName(true);
+        toggleCourseNameOpen(true);
       }}
+      onCancel={clearState}
       goButton="Next"
     />
     <CustomDialog
@@ -72,12 +108,14 @@ function NewGame(props) {
       input
       inputLabel="Course Name"
       handleInput={handleCourseName}
-      toggleOpen={toggleCourseName}
+      inputValue={courseName}
+      toggleOpen={toggleCourseNameOpen}
       onClick={() => {
-        toggleCourseName(false);
+        toggleCourseNameOpen(false);
         togglePlayerEntry(true);
-        next(thisOne+1);
+        nextDialog(dialogIndex+1); //sets dialog to 0
       }}
+      onCancel={clearState}
       goButton="Next"
     />
     {playerEntryOpen ?
@@ -88,14 +126,16 @@ function NewGame(props) {
       input
       inputLabel={`Player ${i+1}'s Name:`}
       handleInput={changePlayerName}
-      open={thisOne === i}
-      toggleOpen={() => next(-1)}
+      inputValue={playerNames[i]}
+      open={dialogIndex === i}
+      toggleOpen={() => nextDialog(-1)}
       title={`Last Player! Enter Player ${i+1}'s Name`}
       onClick={() => {
-        next(-1);
+        nextDialog(-1);
         handlePlayerPush(playerName);
         toggleConfirmOpen(true);
       }}
+      onCancel={clearState}
       goButton="Next"
     /> :
     <CustomDialog
@@ -103,13 +143,15 @@ function NewGame(props) {
       input
       inputLabel={`Player ${i+1}'s Name:`}
       handleInput={changePlayerName}
-      open={thisOne === i}
-      toggleOpen={() => next(-1)}
+      inputValue={playerNames[i]}
+      open={dialogIndex === i}
+      toggleOpen={() => nextDialog(-1)}
       title={`Enter Player ${i+1}'s Name`}
       onClick={() => {
-        next(thisOne+1);
+        nextDialog(dialogIndex+1);
         handlePlayerPush(playerName);
       }}
+      onCancel={clearState}
       goButton="Next"
     />) : null}
     <CustomDialog
@@ -120,32 +162,11 @@ function NewGame(props) {
       onClick={() => {
         addToServer();
       }}
+      onCancel={clearState}
       goButton="Begin!"
       
     />
-    <Typography variant='h2'>New Game</Typography>
- 
-    <Typography variant='h3'>How Many Players?</Typography>
-
-    <Grid container spacing={16}>
     
-      {players.map((player, key) =>
-        <BlockButton
-        width={6}
-        key={key+1}
-        title={key+1}
-        onClick={() => 
-          {changeNumberPlayers(key+1);
-          toggleStartOpen(true);
-          next(-1);}}/>
-      )}
-
-      <BlockButton
-        width={12}
-        title={"More... Not Working Yet"}
-      />
-
-    </Grid>
 
     {redirect ? <Redirect to={{ pathname: `/scorecard/${courseName}` }} /> : null}
   </div>

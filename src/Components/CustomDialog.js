@@ -1,4 +1,4 @@
-import React,  { useState } from 'react';
+import React from 'react';
 import {Link} from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -9,7 +9,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const CustomDialog = (props) => {
-  const [input, setInput] = useState("");
   return (
     <Dialog
     open={props.open}
@@ -25,19 +24,18 @@ const CustomDialog = (props) => {
         <TextField
           autoFocus
           margin="dense"
-          value={input}
+          value={props.inputValue}
           id={props.inputId}
           label={props.inputLabel}
           type="text"
           onChange={(e) => {
             props.handleInput(e.target.value);
-            setInput(e.target.value);
           }}/> 
         : null}
       </DialogContent>
       <DialogActions>
         <Button 
-          onClick={() => props.toggleOpen(false)} 
+          onClick={props.onCancel}
           color="primary">
             {props.cancelButton ? props.cancelButton : "Cancel"}
         </Button>

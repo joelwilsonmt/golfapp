@@ -10,20 +10,25 @@ import Welcome from './Components/Welcome';
 import NewGame from './Components/NewGame';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { AnimatedSwitch } from 'react-router-transition';
+import {ProviderContext} from './ContextProviders/Provider';
 require('dotenv').config();
 
 function App() {
 
   return (
-    <Router>
-      <NavBar/>
-      <Route path="/" exact component={Home} />
-      <Route path="/hole/:holeNumber" component={Hole} />
-      <Route path="/scorecard/:courseName" component={ScoreCard}/>
-      <Route path="/start/" component={Start} />
-      <Route path="/welcome/" component={Welcome} />
-      <Route path="/newgame/" component={NewGame} />
-  </Router>
+    <ProviderContext.Consumer>
+      {game =>
+        <Router>
+          <NavBar/>
+          <Route path="/" exact component={Home} />
+          <Route path="/hole/:holeNumber" component={Hole} />
+          <Route path="/scorecard/:courseName" render={(props) => <ScoreCard game={game} {...props}/>}/>
+          <Route path="/start/" component={Start} />
+          <Route path="/welcome/" component={Welcome} />
+          <Route path="/newgame/" render={(props) => <NewGame game={game} {...props}/>} />
+        </Router>
+      }
+    </ProviderContext.Consumer>
   );
 }
 

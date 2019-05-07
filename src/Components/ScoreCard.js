@@ -13,7 +13,13 @@ function ScoreCard(props) {
   for (var i = 0; i < 18; i++){
     holes.push(<Typography variant="body1">Hole {i+1}</Typography>);
   }
-  const courseName = props.match.params.courseName;
+  const courseName = props.game.courseName;
+  const game = props.game.game;
+  console.log("game in scorecard: ", game);
+  // const players = game.forEach(person => {
+  //   return person.name;
+  // });
+  // console.log("players in scoredcard: ", players);
   return (
     <div>
     <Typography align="center" variant="h3">{courseName}</Typography>

@@ -18,7 +18,7 @@ let UserSchema = mongoose.Schema(
       }],
       courseName: String,
       data: Date,
-      location: {
+      /*location: {
         type: {
           type: String, // Don't do `{ location: { type: String } }`
           enum: ['Point'], // 'location.type' must be 'Point'
@@ -28,7 +28,7 @@ let UserSchema = mongoose.Schema(
           type: [Number],
           required: true
         }
-      }
+      }*/
     }]
     },
     { collection: 'golf' });
