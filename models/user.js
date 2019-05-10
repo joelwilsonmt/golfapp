@@ -10,14 +10,15 @@ let UserSchema = mongoose.Schema(
       active: Boolean,
       holes: [{
         par: Number,
-        score: Number,
+        strokes: Number,
         putts: Number,
         fairwayHit: Boolean,
         greensInRegulation: Boolean,
         picture: { data: Buffer, contentType: String }
       }],
       courseName: String,
-      data: Date,
+      date: Date,
+      formattedDate: String,
       /*location: {
         type: {
           type: String, // Don't do `{ location: { type: String } }`

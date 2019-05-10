@@ -39,6 +39,14 @@ const CustomDialog = (props) => {
           color="primary">
             {props.cancelButton ? props.cancelButton : "Cancel"}
         </Button>
+        {props.back ? 
+        <Button 
+          onClick={props.goBack}
+          color="secondary"
+          variant="contained">
+            {props.backButton ? props.backButton : "Back"}
+        </Button> 
+        : null}
         {props.link ?
         <Button
           disabled={props.disabled}

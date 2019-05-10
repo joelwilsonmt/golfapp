@@ -17,28 +17,24 @@ function NewGame(props) {
 
 
   const [courseName, handleCourseName] = useState("");
-  const [playerName, changePlayerName] = useState("");
-  const [playerNames, pushPlayerNames] = useState([]);
+  const [playerNames, changePlayerNames] = useState([]);
   const [numberPlayers, changeNumberPlayers] = useState(0);
 
   const [dialogIndex, nextDialog] = useState(-1);
   const [redirect, toggleRedirect] = useState(false);
 
   const clearState = () => {
-    changePlayerName("");
+    changePlayerNames([]);
     handleCourseName("");
-    pushPlayerNames([""]);
     toggleStartOpen(false);
     toggleCourseNameOpen(false);
     togglePlayerEntry(false);
     toggleConfirmOpen(false);
-    console.log("state cleared, coursename: ", courseName);
-    console.log("state cleared, players: ", playerNames);
   }
-  const handlePlayerPush = (playerName) => {
-    let temp = playerNames;
-    temp.push(playerName);
-    pushPlayerNames(temp);
+  const handlePlayerNameChange = (name, index) => {
+    changePlayerNames(previousNames => {
+      return [...previousNames.slice(0, index), name, ...previousNames.slice(index+1)];
+    });
   }
   const addToServer = async () => {
     toggleLoading(true);
@@ -48,11 +44,15 @@ function NewGame(props) {
     await axios.put(userRoute, {
       name: name,
       courseName: courseName,
-      active: true
+      active: true,
+      holes: 18 //change this later
     }).then(
       (res) => {
+        res.data.holes = 18; //change this later
+        //set users and course in provider:
         props.game.addUsers(res.data);
         props.game.setCourse(courseName);
+
         if(i === playerNames.length-1){
           toggleLoading(false); 
           toggleRedirect(true);
@@ -125,34 +125,37 @@ function NewGame(props) {
       key={i}
       input
       inputLabel={`Player ${i+1}'s Name:`}
-      handleInput={changePlayerName}
+      handleInput={e => handlePlayerNameChange(e, i)}
       inputValue={playerNames[i]}
       open={dialogIndex === i}
       toggleOpen={() => nextDialog(-1)}
-      title={`Last Player! Enter Player ${i+1}'s Name`}
+      title={`Enter Player ${i+1}'s Name`}
       onClick={() => {
         nextDialog(-1);
-        handlePlayerPush(playerName);
         toggleConfirmOpen(true);
       }}
       onCancel={clearState}
       goButton="Next"
+      back
+      goBack={() => nextDialog(dialogIndex-1)}
     /> :
     <CustomDialog
       key={i}
       input
       inputLabel={`Player ${i+1}'s Name:`}
-      handleInput={changePlayerName}
+      handleInput={e => handlePlayerNameChange(e, i)}
       inputValue={playerNames[i]}
       open={dialogIndex === i}
       toggleOpen={() => nextDialog(-1)}
       title={`Enter Player ${i+1}'s Name`}
       onClick={() => {
         nextDialog(dialogIndex+1);
-        handlePlayerPush(playerName);
       }}
       onCancel={clearState}
       goButton="Next"
+      back
+      goBack={() => {nextDialog(dialogIndex-1)}
+      }
     />) : null}
     <CustomDialog
       open={confirmOpen}
@@ -164,6 +167,11 @@ function NewGame(props) {
       }}
       onCancel={clearState}
       goButton="Begin!"
+      back
+      goBack={() => {
+        toggleConfirmOpen(false);
+        nextDialog(numberPlayers-1);
+      }}
       
     />
     

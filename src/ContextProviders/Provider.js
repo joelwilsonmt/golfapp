@@ -14,23 +14,53 @@ class Provider extends React.Component {
       });
     }
     this.addUsers = (obj) => {
-      let game = this.state.game ? this.state.game : [];
-      game.push({name: obj.name})
+      let players = this.state.players ? this.state.players : [];
+      players.push({
+        name: obj.name,
+        holes: Array(obj.holes).fill({}),
+      })
       this.setState({
-        game: game
+        players: players
       });
-      console.log("game state after user push: ", this.state.game);
+      console.log("provider state after adding players: ", this.state.players);
     }
     this.setCourse = (courseName) => {
       this.setState({
         courseName: courseName
       });
-      console.log("course name set in provider: ", this.state.courseName);
+    }
+    this.addHole = async (holeObj) => {
+      console.log("adding hole in provider: ", holeObj);
+      let players = this.state.players;
+      for(var i = 0; i < players.length; i++){
+        if(players[i].name === holeObj.name){
+          let hole = {
+            par: holeObj.par,
+            strokes: holeObj.strokes,
+            putts: holeObj.putts,
+            fairwayHit: holeObj.fairwayHit,
+            greensInRegulation: holeObj.greensInRegulation//,
+            //picture: { data: Buffer, contentType: String }
+          }
+          players[i].holes[holeObj.holeNumber-1] = hole;
+          this.setState({
+            players: players
+          })
+        }
+      }
+      console.log("players state after holes set in provider: ", this.state.players);
+      return true;
+      const holeRoute = process.env.REACT_APP_BACK_END_SERVER + 'hole';
+      await axios.put(holeRoute, holeObj).then(
+        (res) => {
+         //save to local storage?
+      });//closes axios put
     }
     this.state = {
         addUsers : this.addUsers,
         authorize: this.authorize,
-        setCourse: this.setCourse
+        setCourse: this.setCourse,
+        addHole: this.addHole,
     }
   }
 

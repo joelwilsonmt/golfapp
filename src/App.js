@@ -21,7 +21,7 @@ function App() {
         <Router>
           <NavBar/>
           <Route path="/" exact component={Home} />
-          <Route path="/hole/:holeNumber" component={Hole} />
+          <Route path="/hole/:holeNumber" render={(props) => <Hole game={game} {...props}/>} />
           <Route path="/scorecard/:courseName" render={(props) => <ScoreCard game={game} {...props}/>}/>
           <Route path="/start/" component={Start} />
           <Route path="/welcome/" component={Welcome} />

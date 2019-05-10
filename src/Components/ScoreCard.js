@@ -14,8 +14,13 @@ function ScoreCard(props) {
     holes.push(<Typography variant="body1">Hole {i+1}</Typography>);
   }
   const courseName = props.game.courseName;
-  const game = props.game.game;
-  console.log("game in scorecard: ", game);
+  const game = props.game;
+  console.log("players in scorecard: ", game.players);
+  let players = [];
+  game.players.map(player => {
+    players.push(player.name);
+    return true;
+  })
   // const players = game.forEach(person => {
   //   return person.name;
   // });
@@ -23,13 +28,14 @@ function ScoreCard(props) {
   return (
     <div>
     <Typography align="center" variant="h3">{courseName}</Typography>
+    <Typography align="center" variant="h5">Players: {players.map((player, i) => `${player}${i+1 === players.length ? "" : ", "}`)}</Typography>
     <List>
     {holes.map((hole, i) => 
       <div key={i+1}><ListItem button >
         <ListItemIcon>
           <GolfCourse />
         </ListItemIcon>
-        <ListItemText primary={<Link to={`/hole/${i+1}`}>{hole}</Link>} />
+        <ListItemText primary={<Link to={{pathname: `/hole/${i+1}`, state: {players: players}}}>{hole}</Link>} />
       </ListItem>
       {i === holes.length-1 ? null : <Divider variant="fullWidth"/>}
       </div>
