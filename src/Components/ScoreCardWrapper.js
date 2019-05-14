@@ -18,16 +18,16 @@ import RestoreIcon from '@material-ui/icons/Restore';
 import MapIcon from '@material-ui/icons/Map';
 import ViewList from '@material-ui/icons/ViewList';
 
-
+import ScoreCard from './ScoreCard';
 import Map from './Map';
 import RoundTable from './RoundTable';
 import RecoverGame from './RecoverGame';
-import {ProviderContext} from './../ContextProviders/Provider';
+import {ProviderContext} from '../ContextProviders/Provider';
 import BottomNavBar from './BottomNavBar';
 require('dotenv').config();
 
 
-function ScoreCard(props) {
+function ScoreCardWrapper(props) {
   const [tab, switchTab] = useState("ScoreCard");
   const game = props.game;
   const courseName = game.courseName;
@@ -57,7 +57,7 @@ function ScoreCard(props) {
     icon: <MapIcon />
   },
   {
-    name: "Round Overview",
+    name: "Overview",
     icon: <ViewList />
   }];
   if (!players){
@@ -129,4 +129,4 @@ function ScoreCard(props) {
   }
 }
 
-export default ScoreCard;
+export default ScoreCardWrapper;

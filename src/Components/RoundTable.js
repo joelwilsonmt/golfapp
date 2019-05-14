@@ -14,21 +14,13 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import RestoreIcon from '@material-ui/icons/Restore';
-import MapIcon from '@material-ui/icons/Map';
-import ViewList from '@material-ui/icons/ViewList';
 
-
-import Map from './Map';
-import RoundTable from './RoundTable';
 import RecoverGame from './RecoverGame';
-import {ProviderContext} from './../ContextProviders/Provider';
-import BottomNavBar from './BottomNavBar';
+import {ProviderContext} from '../ContextProviders/Provider';
 require('dotenv').config();
 
 
-function ScoreCard(props) {
-  const [tab, switchTab] = useState("ScoreCard");
+function RoundTable(props) {
   const game = props.game;
   const courseName = game.courseName;
   const players = game.players;
@@ -46,20 +38,6 @@ function ScoreCard(props) {
       fontWeight: "bold"
     }
   }
-  console.log("number of holes in scorecard: ", numberOfHoles);
-
-  const tabs = [{
-    name: "ScoreCard",
-    icon: <RestoreIcon />
-  },
-  {
-    name: "Map",
-    icon: <MapIcon />
-  },
-  {
-    name: "Round Overview",
-    icon: <ViewList />
-  }];
   if (!players){
     return (
         <ProviderContext.Consumer>
@@ -70,7 +48,6 @@ function ScoreCard(props) {
   else {
     return (
       <div>
-      {tab === "ScoreCard" ? <div>
       <Typography align="center" variant="h3">{courseName}</Typography>
       <Typography align="center" variant="h5">Players: {players.map((player, i) => `${player.name} (${playerScores[i]})${i+1 === players.length ? "" : ", "} `)}</Typography>
       <List>
@@ -117,16 +94,10 @@ function ScoreCard(props) {
         {i === players[0].holes.length-1 ? null : <Divider variant="fullWidth"/>}
         </div>
       )}
-      </List></div> : null}
-      {tab === "Map" ? <Map/> : null}
-      {tab === "Round Overview" ? 
-      <ProviderContext.Consumer>
-      {game => <RoundTable game={game} />}
-      </ProviderContext.Consumer> : null}
-      <BottomNavBar currentTab={tab} tabs={tabs} onChange={switchTab}/>
+      </List>
       </div>
     );
   }
 }
 
-export default ScoreCard;
+export default RoundTable;

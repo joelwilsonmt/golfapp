@@ -8,7 +8,7 @@ const styles = {
   root: {
     width: "100vw",
     bottom: 0,
-    position: "absolute"
+    position: "fixed"
   },
 };
 
