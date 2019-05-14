@@ -13,6 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Paper from '@material-ui/core/Paper';
 import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/ListAlt';
+import Button from '@material-ui/core/Button';
 
 
 const styles = {
@@ -55,6 +56,11 @@ function Home(props) {
                   <ListIcon />
                 </ListItemIcon>
                 <Link to="/scorecard/">ScoreCard</Link>
+              </MenuItem>
+              <MenuItem className={classes.menuItem}>
+                <Button onClick={() => localStorage.clear()}>
+                  Clear Local Storage
+                </Button>
               </MenuItem>
               </MenuList>
           </Paper>

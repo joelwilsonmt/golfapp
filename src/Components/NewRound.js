@@ -8,17 +8,20 @@ import { Redirect } from "react-router-dom";
 import axios from 'axios';
 require('dotenv').config();
 
-function NewGame(props) {
+function NewRound(props) {
   const [startOpen, toggleStartOpen] = useState(false);
+  const [moreOpen, toggleMoreOpen] = useState(false);
   const [courseNameOpen, toggleCourseNameOpen] = useState(false);
   const [playerEntryOpen, togglePlayerEntry] = useState(false);
   const [confirmOpen, toggleConfirmOpen] = useState(false);
+  const [holeEntryOpen, toggleHoleEntryOpen] = useState(false);
   const [loading, toggleLoading] = useState(false);
 
 
   const [courseName, handleCourseName] = useState("");
   const [playerNames, changePlayerNames] = useState([]);
   const [numberPlayers, changeNumberPlayers] = useState(0);
+  const [numberHoles, changeNumberHoles] = useState(0);
 
   const [dialogIndex, nextDialog] = useState(-1);
   const [redirect, toggleRedirect] = useState(false);
@@ -26,10 +29,13 @@ function NewGame(props) {
   const clearState = () => {
     changePlayerNames([]);
     handleCourseName("");
+    changeNumberPlayers(0);
+    toggleHoleEntryOpen(false);
     toggleStartOpen(false);
     toggleCourseNameOpen(false);
     togglePlayerEntry(false);
     toggleConfirmOpen(false);
+    toggleMoreOpen(false);
   }
   const handlePlayerNameChange = (name, index) => {
     changePlayerNames(previousNames => {
@@ -45,14 +51,14 @@ function NewGame(props) {
       name: name,
       courseName: courseName,
       active: true,
-      holes: 18 //change this later
+      holes: numberHoles //change this later
     }).then(
       (res) => {
-        res.data.holes = 18; //change this later
+        res.data.holes = numberHoles; //change this later
         //set users and course in provider:
-        props.game.addUsers(res.data);
         props.game.setCourse(courseName);
-
+        props.game.addUsers(res.data);
+        
         if(i === playerNames.length-1){
           toggleLoading(false); 
           toggleRedirect(true);
@@ -62,18 +68,37 @@ function NewGame(props) {
   }
   const confirm = <div>
   <Typography variant='body1'>Course: {courseName}</Typography>
+  <Typography variant='body1'>Holes: {numberHoles}</Typography>
   <Typography inline variant='body2'>Player{numberPlayers === 1 ? "" : "s"}: </Typography>
     {playerNames.map((player, key) =>
       <Typography inline variant='body2' key={key}>{player}{key+1 === playerNames.length ? null : ', '}</Typography>
       )}
-  </div>
+  </div>;
+  const holeSelect = <Grid container spacing={16}>
+      <BlockButton
+      width={6}
+      title="9 Holes"
+      onClick={() => 
+        {changeNumberHoles(9);
+        togglePlayerEntry(true);
+        nextDialog(dialogIndex+1);}
+      }/>
+      <BlockButton
+      width={6}
+      title="18 Holes"
+      onClick={() => 
+        {changeNumberHoles(18)
+        togglePlayerEntry(true);
+        nextDialog(dialogIndex+1);}
+      }/>
+    </Grid>
 
   return (
     <div>
-      <Typography align="center" variant='h2'>New Game</Typography>
-      <Typography align="center" variant='h3'>How Many Players?</Typography>
+      <Typography align="center" variant='h2' gutterBottom>New Round</Typography>
+      <Typography align="center" variant='h3' gutterBottom>How Many Players?</Typography>
       <Grid container spacing={16}>
-        {Array(...Array(4)).map((player, key) =>
+        {Array(...Array(4)).map((number, key) =>
           <BlockButton
           width={6}
           key={key+1}
@@ -85,15 +110,35 @@ function NewGame(props) {
         )}
         <BlockButton
           width={12}
-          title={"More... Not Working Yet"}
+          title={"More..."}
+          onClick={() => 
+            {toggleMoreOpen(true);
+            nextDialog(-1);
+            }
+          }
         />
       </Grid>
 
     {/*-------------------------------------------------start dialogs---------------------------------------------*/}  
     <Loading open={loading}/>
     <CustomDialog
+      open={moreOpen}
+      title={`Select number of players`}
+      toggleOpen={toggleMoreOpen}
+      input
+      inputLabel="Number of Players"
+      handleInput={(e) => changeNumberPlayers(parseInt(e))}
+      inputValue={Number.isNaN(numberPlayers) ? "" : numberPlayers === 0 ? "" : numberPlayers}
+      onClick={() => {
+        toggleMoreOpen(false);
+        toggleStartOpen(true);
+      }}
+      onCancel={clearState}
+      goButton="Next"
+    />
+    <CustomDialog
       open={startOpen}
-      title={`Start game with ${numberPlayers} player${numberPlayers === 1 ? "" : "s"}?`}
+      title={`Start round with ${numberPlayers} player${numberPlayers === 1 ? "" : "s"}?`}
       toggleOpen={toggleStartOpen}
       onClick={() => {
         toggleStartOpen(false);
@@ -112,11 +157,18 @@ function NewGame(props) {
       toggleOpen={toggleCourseNameOpen}
       onClick={() => {
         toggleCourseNameOpen(false);
-        togglePlayerEntry(true);
-        nextDialog(dialogIndex+1); //sets dialog to 0
+        toggleHoleEntryOpen(true);
       }}
       onCancel={clearState}
       goButton="Next"
+    />
+    <CustomDialog
+      open={holeEntryOpen}
+      title={`Number of Holes?`}
+      content={holeSelect}
+      toggleOpen={toggleHoleEntryOpen}
+      onCancel={clearState}
+      noActions
     />
     {playerEntryOpen ?
     Array(...Array(numberPlayers)).map((player, i) =>
@@ -172,7 +224,6 @@ function NewGame(props) {
         toggleConfirmOpen(false);
         nextDialog(numberPlayers-1);
       }}
-      
     />
     
 
@@ -181,4 +232,4 @@ function NewGame(props) {
   );
 }
 
-export default NewGame;
+export default NewRound;

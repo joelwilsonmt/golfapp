@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import Provider from './ContextProviders/Provider';
+import {ProviderContext} from './ContextProviders/Provider';
 
 ReactDOM.render(
     <Provider>
-        <App />
+        <App/>
     </Provider>
 , document.getElementById('root'));
 
