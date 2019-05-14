@@ -33,6 +33,7 @@ const CustomDialog = (props) => {
           }}/> 
         : null}
       </DialogContent>
+      {props.noActions ? null :
       <DialogActions>
         <Button 
           onClick={props.onCancel}
@@ -65,7 +66,7 @@ const CustomDialog = (props) => {
           onClick={props.onClick}>
             {props.goButton ? props.goButton : "Go"}
         </Button>}
-      </DialogActions>
+      </DialogActions>}
     </Dialog>
   );
 }

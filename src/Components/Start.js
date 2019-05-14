@@ -11,14 +11,14 @@ function Start(props) {
       </Typography>
 
       <BlockButton
-      title="New Game"
-      link="/newgame/"/>
+      title="New Round"
+      link="/newround/"/>
 
       <BlockButton
-      title="Find a Game in Progress"/>
+      title="Find a Round in Progress"/>
 
       <BlockButton
-      title="Review Past Games"/>
+      title="Review Past Rounds"/>
 
     </div>
   );

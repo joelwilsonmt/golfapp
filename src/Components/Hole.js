@@ -9,7 +9,6 @@ import CustomDialog from './CustomDialog';
 import Loading from './Loading';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { withStyles } from '@material-ui/core/styles';
-import axios from 'axios';
 
 const styles = {
   root: {
@@ -20,33 +19,21 @@ const styles = {
     marginBottom: '10px'
   }
 };
-const holeObject = [];
-const createHoleObject = (player, par, holeNumber, strokes, putts, fairwayHit, greensInRegulation) => {
-  holeObject.push({
-    name: player,
-    par: parseInt(par),
-    holeNumber: parseInt(holeNumber),
-    strokes: strokes,
-    putts: putts,
-    fairwayHit: fairwayHit,
-    greensInRegulation: greensInRegulation
-  })
-}
+
 
 function Hole(props) {
   const { classes } = props;
   let players = props.location.state.players;
+  let scores = props.location.state.scores;
   
-  const [par, setPar] = useState(0);
-  const [strokesArray, setStrokes] = useState(Array(players.length).fill(0));
-  const [puttsArray, setPutts] = useState(Array(players.length).fill(0));
-  const [fairwayHitsArray, setFairwayHits] = useState(Array(players.length).fill(false));
-  const [greensInRegulationArray, setGreensInRegulation] = useState(Array(players.length).fill(false));
+  const [par, setPar] = useState(props.location.state.par ? props.location.state.par : 0);
+  const [strokesArray, setStrokes] = useState(scores ? scores.map(score => score.strokes) : Array(players.length).fill(0));
+  const [puttsArray, setPutts] = useState(scores ? scores.map(score => score.putts) : Array(players.length).fill(0));
+  const [fairwayHitsArray, setFairwayHits] = useState(scores ? scores.map(score => score.fairwayHit) : Array(players.length).fill(false));
+  const [greensInRegulationArray, setGreensInRegulation] = useState(scores ? scores.map(score => score.greensInRegulation) : Array(players.length).fill(false));
   const [confirmOpen, toggleConfirmOpen] = useState(false);
   const [confirmClearState, toggleConfirmClearState] = useState(false);
-  const [redirect, toggleRedirect] = useState(false);
   const [loading, toggleLoading] = useState(false);
-
   const clearState = () => {
     setPar(0);
     setStrokes(Array(players.length).fill(0));
@@ -74,6 +61,18 @@ function Hole(props) {
       return [...previousGreensInRegulation.slice(0, index), greensInRegulation, ...previousGreensInRegulation.slice(index+1)];
     });
   }
+  const holeObject = [];
+  const createHoleObject = (player, par, holeNumber, strokes, putts, fairwayHit, greensInRegulation) => {
+    holeObject.push({
+      name: player,
+      par: parseInt(par),
+      holeNumber: parseInt(holeNumber),
+      strokes: strokes,
+      putts: putts,
+      fairwayHit: fairwayHit,
+      greensInRegulation: greensInRegulation
+    })
+  }
   const submit = () => {
     //player, par, strokes, putts, fairwayHits, greensInRegulation
     toggleLoading(true);
@@ -82,10 +81,17 @@ function Hole(props) {
     });
     console.log("hole object after creation: ", holeObject);
     
-    holeObject.forEach(async score => {
+    holeObject.forEach(async (score, i) => {
       console.log("sending this score object to database: ", score);
-      props.game.addHole(score);
+      await props.game.addHole(score);
+      toggleLoading(false);
+      console.log("working through players foreach...");
+      if(i === players.length-1){
+        console.log("going to previous screen...");
+        props.history.go(-1);
+      }
     });//closes holeObject.foreach
+    
   }//closes submit function
   //create dialogue "Does this look right? With score stuff"
   const confirm = <div align="center">
@@ -139,10 +145,8 @@ function Hole(props) {
         title={`Does this look right?`}
         content={confirm}
         onClick={() => {
-          //addToServer();
           toggleConfirmOpen(false);
           submit();
-          //props.history.go(-1);
         }}
         onCancel={() => toggleConfirmOpen(false)}
         goButton="Submit"

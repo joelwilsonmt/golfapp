@@ -36,20 +36,10 @@ router.put("/", function(req, res) {
           }
           result.games[i].holes[data.holeNumber-1] = holeObj;
           result.markModified('holes');
-					result.save();
+          result.save();
+          res.status(200).send(result);
         }
       }
-      
-      const newGame = {
-        courseName: data.courseName,
-        active: data.active,
-        holes: Array(data.holes).fill({})
-      }
-      result.games.push(newGame);
-      console.log("user games after push: ", result.games);
-      result.markModified('games');
-      result.save();
-      res.status(200).send(result);
   });
 }); //closes router.put
 

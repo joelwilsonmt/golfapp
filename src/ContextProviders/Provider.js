@@ -18,19 +18,20 @@ class Provider extends React.Component {
       players.push({
         name: obj.name,
         holes: Array(obj.holes).fill({}),
+        courseName: this.state.courseName
       })
       this.setState({
         players: players
       });
-      console.log("provider state after adding players: ", this.state.players);
+      localStorage.setItem('game', JSON.stringify(this.state.players));
     }
     this.setCourse = (courseName) => {
       this.setState({
         courseName: courseName
       });
+      localStorage.setItem('courseName', this.state.courseName);
     }
     this.addHole = async (holeObj) => {
-      console.log("adding hole in provider: ", holeObj);
       let players = this.state.players;
       for(var i = 0; i < players.length; i++){
         if(players[i].name === holeObj.name){
@@ -48,19 +49,29 @@ class Provider extends React.Component {
           })
         }
       }
-      console.log("players state after holes set in provider: ", this.state.players);
-      return true;
       const holeRoute = process.env.REACT_APP_BACK_END_SERVER + 'hole';
+      holeObj.courseName = this.state.courseName;
       await axios.put(holeRoute, holeObj).then(
         (res) => {
-         //save to local storage?
+         console.log("hole write to DB complete, writing players object to local storage");
+         //let storage = this.state.players;
+         localStorage.setItem('game', JSON.stringify(this.state.players));
+         localStorage.setItem('courseName', this.state.courseName);
       });//closes axios put
+    }
+    this.recoverGame = (game) => {
+      console.log("game object to recover: ", game);
+      this.setState({
+        courseName: game[0].courseName,
+        players: game
+      });
     }
     this.state = {
         addUsers : this.addUsers,
         authorize: this.authorize,
         setCourse: this.setCourse,
         addHole: this.addHole,
+        recoverGame: this.recoverGame
     }
   }
 
