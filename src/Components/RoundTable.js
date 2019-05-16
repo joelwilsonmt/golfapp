@@ -1,31 +1,59 @@
-import React,  { useState } from 'react';
-import {Link} from "react-router-dom";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import GolfCourse from '@material-ui/icons/GolfCourse';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableFooter from '@material-ui/core/TableFooter';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
-import RecoverGame from './RecoverGame';
-import {ProviderContext} from '../ContextProviders/Provider';
 require('dotenv').config();
 
+const styles = theme => ({
+  root: {
+    width: '100%',
+    overflowX: 'auto',
+  },
+  table: {
+    maxWidth: '100%',
+  },
+  head: {
+    position: 'sticky'
+  },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },
+  },
+  bottomRow: {
+    backgroundColor: '#000',
+    color: 'white'
+  },
+  overPar: {
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  underPar: {
+    backgroundColor: 'green',
+    color: 'white'
+  }
+});
 
 function RoundTable(props) {
+  const {classes} = props;
   const game = props.game;
   const courseName = game.courseName;
   const players = game.players;
-  const playerNames = players ? players.map(player => {return player.name}) : null;
   const numberOfHoles = players ? players[0].holes.length : null;
+  const styles={
+    bold: {
+      fontWeight: "bold"
+    }
+  }
+  let totalPar = 0;
+  players[0].holes.forEach(hole => totalPar += hole.par ? hole.par : 0);
   const playerScores = players ? players.map(player => {
     let totalScore = 0;
     player.holes.forEach(hole => {
@@ -33,71 +61,66 @@ function RoundTable(props) {
     });
     return totalScore;
   }) : null;
-  const styles={
-    bold: {
-      fontWeight: "bold"
-    }
-  }
-  if (!players){
-    return (
-        <ProviderContext.Consumer>
-          {game =><RecoverGame game={game}/>}
-        </ProviderContext.Consumer>
-    );
-  }
-  else {
-    return (
-      <div>
-      <Typography align="center" variant="h3">{courseName}</Typography>
-      <Typography align="center" variant="h5">Players: {players.map((player, i) => `${player.name} (${playerScores[i]})${i+1 === players.length ? "" : ", "} `)}</Typography>
-      <List>
-      {players[0].holes.map((hole, i) => 
-        <div key={i+1}>
-        {Object.getOwnPropertyNames(hole).length > 0 ? 
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <CheckCircle />
-            <Typography>Hole {i+1}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-          <Grid container spacing={16}>
-          <Grid item xs={12}>
-            <Typography>Par: {hole.par}</Typography>
-          </Grid>
-            {players.map(player => {
-              return  <Grid item xs={12}>
-                <Typography variant="h5">{player.name}</Typography>
-                <Typography style={styles.bold} inline>Strokes:</Typography> <Typography inline>{player.holes[i].strokes}</Typography><br/>
-                <Typography style={styles.bold} inline>Putts:</Typography> <Typography inline> {player.holes[i].putts}</Typography><br/>
-                <Typography style={styles.bold} inline>Fairway Hit?</Typography> <Typography inline> {player.holes[i].fairwayHit ? "Yes" : "No"}</Typography><br/>
-                <Typography style={styles.bold} inline>Greens in Regulation?</Typography> <Typography inline> {player.holes[i].greensInRegulation ? "Yes" : "No"}</Typography>
-              </Grid>
-            })}
-            <Button
-            align="right"
-            color="primary"
-            variant="contained"
-            component={ Link }
-            to={{pathname: `/${courseName}/hole/${i+1}`, state: {par: hole.par, players: playerNames, scores: players.map(player => player.holes[i])}}}>
-              Edit
-            </Button>
-            </Grid>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        :
-        <ListItem button >
-          <ListItemIcon>
-            <GolfCourse />
-          </ListItemIcon>
-          <ListItemText primary={<Link to={{pathname: `/${courseName}/hole/${i+1}`, state: {players: playerNames}}}>Hole {i+1}</Link>} />
-        </ListItem>}
-        {i === players[0].holes.length-1 ? null : <Divider variant="fullWidth"/>}
-        </div>
-      )}
-      </List>
-      </div>
-    );
-  }
+  return (
+    <Paper className={classes.root}>
+      <Table padding="dense" className={classes.table}>
+        <TableHead>
+          <TableRow className={classes.head}>
+            <TableCell>Hole</TableCell>
+            <TableCell align="right">Par</TableCell>
+            {players.map(player =>
+            <TableCell align="right">{player.name}</TableCell>
+            )}
+          </TableRow>
+        </TableHead>
+        <TableBody stripedRows>
+          {Array(...Array(numberOfHoles)).map((hole, i) => (
+            <TableRow className={classes.row} key={i}>
+              <TableCell style={styles.bold} component="th" scope="row">
+                Hole {i+1}
+              </TableCell>
+              <TableCell align="right">{players[0].holes[i].par}</TableCell>
+              {players.map((player, j) => {
+                return <TableCell 
+                  className={typeof player.holes[i].par === 'undefined' ? null : player.holes[i].strokes > player.holes[i].par ? classes.overPar : classes.underPar} 
+                  align="right">
+                  {player.holes[i].strokes ? player.holes[i].strokes : '-'}
+                </TableCell>
+              })}
+            </TableRow>
+          ))}
+          
+          </TableBody>
+          <TableFooter >
+            <TableRow>
+              <TableCell className={classes.bottomRow}>TOTALS</TableCell>
+              <TableCell className={classes.bottomRow} align="right">Par</TableCell>
+              {players.map(player =>
+              <TableCell className={classes.bottomRow} align="right">{player.name}</TableCell>
+              )}
+            </TableRow>
+            <TableRow >
+              <TableCell className={classes.bottomRow} style={styles.bold} align="left"></TableCell>
+              <TableCell className={classes.bottomRow} align="right">{totalPar}</TableCell>
+              {players.map((player, i) => {
+                    return <TableCell className={classes.bottomRow} align="right">{playerScores[i]}</TableCell>
+              })}
+            </TableRow>
+            <TableRow className={classes.bottomRow}>
+              <TableCell className={classes.bottomRow} style={styles.bold} align="left">Par +/-</TableCell>
+              <TableCell className={classes.bottomRow} align="right">-</TableCell>
+              {players.map((player, i) => {
+                  return <TableCell className={playerScores[i]-totalPar > 0 ? classes.overPar : classes.underPar} align="right">{playerScores[i]-totalPar >= 0 ? `+${playerScores[i]-totalPar}` : `${playerScores[i]-totalPar}`}</TableCell>
+              })}
+            </TableRow>
+          </TableFooter>
+      </Table>
+    </Paper>
+  );
 }
 
-export default RoundTable;
+RoundTable.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(RoundTable);

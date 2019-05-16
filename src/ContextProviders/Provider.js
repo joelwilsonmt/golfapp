@@ -66,12 +66,17 @@ class Provider extends React.Component {
         players: game
       });
     }
+    this.clearLocalStorage = () => {
+      localStorage.clear();
+      console.log("local storage cleared");
+    }
     this.state = {
         addUsers : this.addUsers,
         authorize: this.authorize,
         setCourse: this.setCourse,
         addHole: this.addHole,
-        recoverGame: this.recoverGame
+        recoverGame: this.recoverGame,
+        clearLocalStorage: this.clearLocalStorage
     }
   }
 

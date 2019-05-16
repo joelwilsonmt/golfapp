@@ -14,6 +14,9 @@ import Paper from '@material-ui/core/Paper';
 import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/ListAlt';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+
 
 
 const styles = {
@@ -27,12 +30,16 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
+  title: {
+    color: 'white',
+    textAlign: 'center'
+  }
 };
 
 function Home(props) {
 
   const [open, toggleDrawer] = useState(false);
-
+  const icon = true;
   const { classes } = props;
   return (
     <div>
@@ -58,7 +65,7 @@ function Home(props) {
                 <Link to="/scorecard/">ScoreCard</Link>
               </MenuItem>
               <MenuItem className={classes.menuItem}>
-                <Button onClick={() => localStorage.clear()}>
+                <Button onClick={() => props.game.clearLocalStorage()}>
                   Clear Local Storage
                 </Button>
               </MenuItem>
@@ -69,9 +76,11 @@ function Home(props) {
     <AppBar position="static">
         <Toolbar>
         <IconButton onClick={() => toggleDrawer(!open)} className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon/>
+        {icon ? <img width="30" src='https://i2.wp.com/justinrussogolfacademy.com/files/2015/11/jr-favicon.png'/> : <MenuIcon/>}
           </IconButton>
-          Golf App
+            <Typography inline className={classes.title} variant="h5">
+              {`  406.golf`} {props.game.courseName ? ` - ${props.game.courseName}` : null}
+            </Typography>
         </Toolbar>
       </AppBar>
       </div>
