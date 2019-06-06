@@ -53,8 +53,8 @@ function Hole(props) {
   const [confirmClearState, toggleConfirmClearState] = useState(false);
   const [loading, toggleLoading] = useState(false);
   const [picture, setPicture] = useState('');
+  const [pictureIndex, setPictureIndex] = useState(0);
   const [cameraOpen, toggleCamera] = useState(false);
-  console.log("picture array: ", picturesArray);
   const clearState = () => {
     setPar(0);
     setStrokes(Array(players.length).fill(0));
@@ -180,6 +180,7 @@ function Hole(props) {
               onClick={() => {
                 console.log("i when retake photo clicked: ", i);
                 handlePictures('', i);
+                setPictureIndex(i);
                 toggleCamera(true);}}>
               <Redo style={{marginRight: 10}} />
               Retake Photo
@@ -188,45 +189,13 @@ function Hole(props) {
             <Fab onClick={() => {
               console.log("i on fab click: ", i);
               handlePictures('', i);
+              setPictureIndex(i);
               toggleCamera(true);}}
               color="primary" aria-label="Photo">
             <PhotoCamera />
           </Fab>}
         </div>
-          <Dialog
-            key={i}
-            open={cameraOpen}
-            fullScreen
-            onEntered={() => {
-              console.log("i on dialog entry: ", i);
-            }}
-          >
-          <Camera
-            onTakePhoto={(pic) => {
-              handlePictures(pic, i)}}
-            picture={picturesArray[i]}
-            />
-          <DialogActions>
-          <Button
-            color="primary"
-            onClick={() => {
-              console.log("i on dialog cancel: ", i);
-              toggleCamera(false);
-            }}
-            >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={picturesArray[i] ? false : true}
-            onClick={() => toggleCamera(false)}
-            >
-            Submit
-          </Button>
 
-        </DialogActions>
-        </Dialog>
         {/*-------------------------------end camera stuff-------------------------------*/}
       </StickyContainer>})/*---------------------------closes map--------------------------------*/}
       <BlockButton title="Submit Scores" onClick={() => toggleConfirmOpen(true)}/>
@@ -253,6 +222,37 @@ function Hole(props) {
         onCancel={() => toggleConfirmClearState(false)}
         goButton="Clear"
       />
+    {/*--------------------------------camera dialog out of loop stuff------------------*/}
+    <Dialog
+      open={cameraOpen}
+      fullScreen
+    >
+    <Camera
+      onTakePhoto={(pic) => {
+        handlePictures(pic, pictureIndex)}}
+      picture={picturesArray[pictureIndex]}
+      />
+    <DialogActions>
+    <Button
+      color="primary"
+      onClick={() => {
+        toggleCamera(false);
+        handlePictures('', pictureIndex);
+      }}
+      >
+      Cancel
+    </Button>
+    <Button
+      variant="contained"
+      color="primary"
+      disabled={picturesArray[pictureIndex] ? false : true}
+      onClick={() => toggleCamera(false)}
+      >
+      Submit
+    </Button>
+
+  </DialogActions>
+  </Dialog>
     </div>
   );
 }
