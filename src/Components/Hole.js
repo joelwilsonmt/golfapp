@@ -61,6 +61,7 @@ function Hole(props) {
     setPutts(Array(players.length).fill(0));
     setFairwayHits(Array(players.length).fill(false));
     setGreensInRegulation(Array(players.length).fill(false));
+    setPictures(Array(players.length).fill(''));
   }
   const handleStrokes = (strokes, index) => {
     console.log("index of strokes ", index);
@@ -155,9 +156,9 @@ function Hole(props) {
 
       {/*------------------------------start player map----------------------------*/}
 
-      {players.map((player, i) =>
-      <StickyContainer
-      key={i}>
+      {players.map((player, i) => {
+        return <StickyContainer
+          key={i}>
         <Sticky>
         {({style}) => (
         <Typography classes={{root: classes.root}} style={{ ...style, zIndex: 100  }} align="center" variant="h3">{player}</Typography>
@@ -177,6 +178,7 @@ function Hole(props) {
               color="primary"
               aria-label="Retake"
               onClick={() => {
+                console.log("i when retake photo clicked: ", i);
                 handlePictures('', i);
                 toggleCamera(true);}}>
               <Redo style={{marginRight: 10}} />
@@ -195,18 +197,22 @@ function Hole(props) {
             key={i}
             open={cameraOpen}
             fullScreen
-            onCancel={() => toggleCamera(false)}
+            onEntered={() => {
+              console.log("i on dialog entry: ", i);
+            }}
           >
           <Camera
             onTakePhoto={(pic) => {
-              console.log("i in component: ", i);
               handlePictures(pic, i)}}
             picture={picturesArray[i]}
             />
           <DialogActions>
           <Button
             color="primary"
-            onClick={() => toggleCamera(false)}
+            onClick={() => {
+              console.log("i on dialog cancel: ", i);
+              toggleCamera(false);
+            }}
             >
             Cancel
           </Button>
@@ -222,7 +228,7 @@ function Hole(props) {
         </DialogActions>
         </Dialog>
         {/*-------------------------------end camera stuff-------------------------------*/}
-      </StickyContainer>)/*---------------------------closes map--------------------------------*/}
+      </StickyContainer>})/*---------------------------closes map--------------------------------*/}
       <BlockButton title="Submit Scores" onClick={() => toggleConfirmOpen(true)}/>
       <CustomDialog
         open={confirmOpen}
