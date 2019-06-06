@@ -29,6 +29,7 @@ router.put("/", function(req, res) {
     const newGame = {
       courseName: data.courseName,
       active: data.active,
+			players: data.players,
       holes: Array(data.holes).fill({}),
       date: date,
       formattedDate: date.toLocaleString('en-US', options)

@@ -6,20 +6,20 @@ import Grid from '@material-ui/core/Grid';
 function BlockButton(props) {
     return (
       <Grid item xs={props.width} style={{ justifySelf: "center", textAlign: "center" }}>
-          {props.link ? 
-          <Button 
+          {props.link ?
+          <Button
             fullWidth
-            variant="contained" 
-            onClick={() => console.log(props.title, " clicked!")}
+            variant="contained"
+            onClick={props.onClick}
             color="primary"
             component={ Link }
             to={props.link}>
               {props.title}
-          </Button> 
+          </Button>
           :
-          <Button 
+          <Button
             fullWidth
-            variant="contained" 
+            variant="contained"
             onClick={props.onClick}
             color="primary">
             {props.title}

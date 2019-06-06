@@ -50,17 +50,18 @@ function NewRound(props) {
     await axios.put(userRoute, {
       name: name,
       courseName: courseName,
+      players: playerNames,
       active: true,
-      holes: numberHoles //change this later
+      holes: numberHoles
     }).then(
       (res) => {
-        res.data.holes = numberHoles; //change this later
+        res.data.holes = numberHoles;
         //set users and course in provider:
         props.game.setCourse(courseName);
         props.game.addUsers(res.data);
-        
+
         if(i === playerNames.length-1){
-          toggleLoading(false); 
+          toggleLoading(false);
           toggleRedirect(true);
         }
       });
@@ -78,7 +79,7 @@ function NewRound(props) {
       <BlockButton
       width={6}
       title="9 Holes"
-      onClick={() => 
+      onClick={() =>
         {changeNumberHoles(9);
         togglePlayerEntry(true);
         nextDialog(dialogIndex+1);}
@@ -86,7 +87,7 @@ function NewRound(props) {
       <BlockButton
       width={6}
       title="18 Holes"
-      onClick={() => 
+      onClick={() =>
         {changeNumberHoles(18)
         togglePlayerEntry(true);
         nextDialog(dialogIndex+1);}
@@ -103,7 +104,7 @@ function NewRound(props) {
           width={6}
           key={key+1}
           title={key+1}
-          onClick={() => 
+          onClick={() =>
             {changeNumberPlayers(key+1);
             toggleStartOpen(true);
             nextDialog(-1);}}/>
@@ -111,7 +112,7 @@ function NewRound(props) {
         <BlockButton
           width={12}
           title={"More..."}
-          onClick={() => 
+          onClick={() =>
             {toggleMoreOpen(true);
             nextDialog(-1);
             }
@@ -119,7 +120,7 @@ function NewRound(props) {
         />
       </Grid>
 
-    {/*-------------------------------------------------start dialogs---------------------------------------------*/}  
+    {/*-------------------------------------------------start dialogs---------------------------------------------*/}
     <Loading open={loading}/>
     <CustomDialog
       open={moreOpen}
@@ -172,7 +173,7 @@ function NewRound(props) {
     />
     {playerEntryOpen ?
     Array(...Array(numberPlayers)).map((player, i) =>
-    i+1 === numberPlayers ? 
+    i+1 === numberPlayers ?
     <CustomDialog
       key={i}
       input
@@ -225,7 +226,7 @@ function NewRound(props) {
         nextDialog(numberPlayers-1);
       }}
     />
-    
+
 
     {redirect ? <Redirect to={{ pathname: `/scorecard/${courseName}` }} /> : null}
   </div>

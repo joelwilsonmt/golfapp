@@ -16,11 +16,12 @@ const CustomDialog = (props) => {
     onBackdropClick={() => props.toggleOpen(false)}
     aria-labelledby="form-dialog-title"
     fullWidth
+    fullScreen={props.fullScreen ? true : false}
     >
       <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
       <DialogContent>
         {props.content}
-        {props.input ? 
+        {props.input ?
         <TextField
           autoFocus
           margin="dense"
@@ -30,23 +31,23 @@ const CustomDialog = (props) => {
           type="text"
           onChange={(e) => {
             props.handleInput(e.target.value);
-          }}/> 
+          }}/>
         : null}
       </DialogContent>
       {props.noActions ? null :
       <DialogActions>
-        <Button 
+        <Button
           onClick={props.onCancel}
           color="primary">
             {props.cancelButton ? props.cancelButton : "Cancel"}
         </Button>
-        {props.back ? 
-        <Button 
+        {props.back ?
+        <Button
           onClick={props.goBack}
           color="secondary"
           variant="contained">
             {props.backButton ? props.backButton : "Back"}
-        </Button> 
+        </Button>
         : null}
         {props.link ?
         <Button

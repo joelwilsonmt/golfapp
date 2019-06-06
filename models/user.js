@@ -8,6 +8,7 @@ let UserSchema = mongoose.Schema(
     name: String,
     games: [{
       active: Boolean,
+      players: [String],
       holes: [{
         par: Number,
         strokes: Number,

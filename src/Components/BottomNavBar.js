@@ -21,8 +21,8 @@ function BottomNavBar(props) {
       showLabels
       className={classes.root}
     >
-    {props.tabs.map(tab =>
-      <BottomNavigationAction value={tab.name} label={tab.name} icon={tab.icon} />
+    {props.tabs.map((tab, i) =>
+      <BottomNavigationAction key={i} value={tab.name} label={tab.name} icon={tab.icon} />
     )}
     </BottomNavigation>
   );

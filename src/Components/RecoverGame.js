@@ -26,8 +26,8 @@ const RecoverGame = (props) => {
   }
   else {
   return (
-      [<Loading open={loading}/>,
-      <Dialog
+      [<Loading key={0} open={loading}/>,
+      <Dialog key={1}
       open={open}
       onClose={() => toggleOpen(false)}
       onBackdropClick={() => toggleOpen(false)}
@@ -42,7 +42,7 @@ const RecoverGame = (props) => {
         <Typography gutterBottom variant="h5">Players: {store.map((player, i) => <span key={i}>{player.name}{i+1 === store.length ? "" : ", "}</span>)} </Typography>
         </DialogContent>
         <DialogActions>
-          <Button 
+          <Button
             color="secondary"
             variant="contained"
             component={ Link }

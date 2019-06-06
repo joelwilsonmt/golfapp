@@ -1,4 +1,4 @@
-    
+
 import React from 'react';
 import axios from 'axios';
 
@@ -40,8 +40,8 @@ class Provider extends React.Component {
             strokes: holeObj.strokes,
             putts: holeObj.putts,
             fairwayHit: holeObj.fairwayHit,
-            greensInRegulation: holeObj.greensInRegulation//,
-            //picture: { data: Buffer, contentType: String }
+            greensInRegulation: holeObj.greensInRegulation,
+            picture: holeObj.picture
           }
           players[i].holes[holeObj.holeNumber-1] = hole;
           this.setState({
@@ -68,7 +68,14 @@ class Provider extends React.Component {
     }
     this.clearLocalStorage = () => {
       localStorage.clear();
-      console.log("local storage cleared");
+      this.setState({
+        courseName: '',
+        players: []
+      });
+      console.log("local storage and provider data cleared");
+    }
+    this.finishRound = () => {
+      console.log("round finished...");
     }
     this.state = {
         addUsers : this.addUsers,

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Link} from "react-router-dom";
+import React,  { useState } from 'react';
+import {Link, Redirect} from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -15,7 +15,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import { StickyContainer, Sticky } from 'react-sticky';
+import axios from 'axios';
 
+import Loading from './Loading';
+import CustomDialog from './CustomDialog';
 import RecoverGame from './RecoverGame';
 import {ProviderContext} from './../ContextProviders/Provider';
 require('dotenv').config();
@@ -26,6 +30,13 @@ const styles = theme => ({
   },
   underPar: {
     color: 'green',
+  },
+  stickyHeader: {
+    zIndex: 100,
+    backgroundColor: '#fff',
+    boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+    padding: "5px 0",
+    marginBottom: 0
   }
 })
 
@@ -35,6 +46,10 @@ function ScoreCard(props) {
   const game = props.game;
   const courseName = game.courseName;
   const players = game.players;
+  const [open, toggleOpen] = useState(true);
+  const [loading, toggleLoading] = useState(false);
+  const [redirect, toggleRedirect] = useState(false);
+
   const playerNames = players ? players.map(player => {return player.name}) : null;
   const numberOfHoles = players ? players[0].holes.length : null;
   const playerScores = players ? players.map(player => {
@@ -49,7 +64,22 @@ function ScoreCard(props) {
       fontWeight: "bold"
     }
   }
-  console.log("number of holes in scorecard: ", numberOfHoles);
+  const submitScores = () => {
+    toggleLoading(true);
+    const finishRoundRoute = process.env.REACT_APP_BACK_END_SERVER + 'finishRound';
+    playerNames.forEach(async (name, i) => {
+      // await axios.put(finishRoundRoute, {name: name, courseName: courseName})
+      // .then(res => {
+      //   console.log("finish round route access complete, result: ", res);
+      //   //redirect to game review
+        if(i === playerNames.length-1){
+          toggleLoading(false);
+          toggleRedirect(true);
+        }
+      //});
+
+    })
+  }
   const bottom = {paddingBottom: '10vh'};
   if (!players){
     return (
@@ -60,39 +90,57 @@ function ScoreCard(props) {
   }
   else {
     return (
-      <div>
-      <Typography align="center" variant="h3">{courseName}</Typography>
-      <Typography align="center" variant="h5">Players: {players.map((player, i) => `${player.name} (${playerScores[i]})${i+1 === players.length ? "" : ", "} `)}</Typography>
+      <StickyContainer>
+        <Loading open={loading}/>
+        <Sticky>
+          {({style}) => (
+            <div className={classes.stickyHeader} style={{...style, zIndex: 100}}>
+              <Typography align="center" variant="h4">{courseName}</Typography>
+              <Typography align="center" variant="h5">Players: {players.map((player, i) => `${player.name} (${playerScores[i]})${i+1 === players.length ? "" : ", "} `)}</Typography>
+            </div>
+          )}
+        </Sticky>
       <List>
-      {players[0].holes.map((hole, i) => 
+      {players[0].holes.map((hole, i) =>
         <div key={i+1}>
-        {Object.getOwnPropertyNames(hole).length > 0 ? 
-        <ExpansionPanel>
+        {Object.getOwnPropertyNames(hole).length > 0 ?
+        <ExpansionPanel dense="true">
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <CheckCircle />
-            <Typography>Hole {i+1}</Typography>
+            <Grid container spacing={16}>
+              <Grid item xs={4}>
+                <CheckCircle />
+              </Grid>
+              <Grid item xs={8}>
+                <Typography>Hole {i+1}</Typography>
+              </Grid>
+            </Grid>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
           <Grid container spacing={16}>
           <Grid item xs={12}>
-            <Typography variant="h4">Par: {hole.par}</Typography>
+            <Typography variant="h5">Par: {hole.par}</Typography>
           </Grid>
-            {players.map(player => {
-              return  <Grid item xs={12}>
+            {players.map((player, i) => {
+              return  <Grid key={i} item xs={6}>
                 <Typography variant="h5" inline>
-                  {player.name} 
-                  <Typography variant="h5" className={player.holes[i].strokes - hole.par > 0 ? classes.overPar : classes.underPar} inline>
-                  {` `}({player.holes[i].strokes - hole.par === 0 ? 'Par' : player.holes[i].strokes - hole.par > 0 ? `+${player.holes[i].strokes - hole.par}` : player.holes[i].strokes - hole.par })
-                  </Typography><br/>
+                  {player.name}
                 </Typography>
-                <Typography style={styles.bold} inline>Strokes:</Typography> <Typography inline>{player.holes[i].strokes}</Typography><br/>
-                <Typography style={styles.bold} inline>Putts:</Typography> <Typography inline> {player.holes[i].putts}</Typography><br/>
+                <Typography variant="h5" className={player.holes[i].strokes - hole.par > 0 ? classes.overPar : classes.underPar} inline>
+                {` `}({player.holes[i].strokes - hole.par === 0 ? 'Par' : player.holes[i].strokes - hole.par > 0 ? `+${player.holes[i].strokes - hole.par}` : player.holes[i].strokes - hole.par })
+                </Typography>
+                <br/>
+                <Typography style={styles.bold} inline>Strokes:</Typography>
+                <Typography inline>{player.holes[i].strokes}</Typography>
+                <br/>
+                <Typography style={styles.bold} inline>Putts:</Typography>
+                <Typography inline> {player.holes[i].putts}</Typography>
+                <br/>
                 {player.holes[i].fairwayHit ? <Typography style={styles.bold}>Fairway Hit</Typography> : null}
                 {player.holes[i].greensInRegulation ? <Typography style={styles.bold}>Greens in Regulation</Typography>: null}
               </Grid>
             })}
             <Button
-            align="right"
+            fullWidth
             color="primary"
             variant="contained"
             component={ Link }
@@ -103,17 +151,44 @@ function ScoreCard(props) {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         :
-        <ListItem button >
-          <ListItemIcon>
-            <GolfCourse />
-          </ListItemIcon>
-          <ListItemText primary={<Link to={{pathname: `/${courseName}/hole/${i+1}`, state: {players: playerNames}}}>Hole {i+1}</Link>} />
-        </ListItem>}
+        <ListItem dense button component={Link} to={{pathname: `/${courseName}/hole/${i+1}`, state: {players: playerNames}}}>
+          <Grid container spacing={16}>
+            <Grid item xs={4}>
+              <GolfCourse />
+            </Grid>
+            <Grid item xs={8}>
+              <ListItemText primary={`Hole ${i+1}`} />
+            </Grid>
+          </Grid>
+        </ListItem>
+        }
         {i === players[0].holes.length-1 ? null : <Divider variant="fullWidth"/>}
         </div>
       )}
       </List>
-      </div>
+      {players[0].holes[players[0].holes.length-1].strokes ? <CustomDialog
+        open={open}
+        title={`Round Complete!`}
+        toggleOpen={toggleOpen}
+        onClick={() => {
+          toggleOpen(false);
+          submitScores();
+        }}
+        onCancel={() => toggleOpen(false)}
+        goButton="Submit"
+        cancelButton="Edit"
+      /> : null}
+      <Button
+        fullWidth
+        disabled={players[0].holes[players[0].holes.length-1].strokes ? false : true}
+        onClick={() => toggleOpen(true)}
+        color="primary"
+        variant="contained"
+        >
+        Submit
+      </Button>
+      {redirect ? <Redirect to={{ pathname: `/roundreview/` }} /> : null}
+      </StickyContainer>
     );
   }
 }

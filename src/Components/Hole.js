@@ -9,6 +9,17 @@ import CustomDialog from './CustomDialog';
 import Loading from './Loading';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { withStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+
+import Redo from '@material-ui/icons/Replay';
+
+
+import Camera from './Camera';
+import Image from './Image'
+
 
 const styles = {
   root: {
@@ -17,6 +28,10 @@ const styles = {
     color: 'white',
     boxShadow: '0 0px 5px rgba(0, 0, 0, .3)',
     marginBottom: '10px'
+  },
+  center: {
+    justifyContent: "center",
+    textAlign: "center"
   }
 };
 
@@ -25,15 +40,21 @@ function Hole(props) {
   const { classes } = props;
   let players = props.location.state.players;
   let scores = props.location.state.scores;
-  
+  let emptyNumberArray = scores ? scores.map(score => score.strokes) : Array(players.length).fill(0);
+  let emptyBooleanArray = scores ? scores.map(score => score.strokes) : Array(players.length).fill(false);
+  let emptyStringArray = scores ? scores.map(score => score.strokes) : Array(players.length).fill('');
   const [par, setPar] = useState(props.location.state.par ? props.location.state.par : 0);
-  const [strokesArray, setStrokes] = useState(scores ? scores.map(score => score.strokes) : Array(players.length).fill(0));
-  const [puttsArray, setPutts] = useState(scores ? scores.map(score => score.putts) : Array(players.length).fill(0));
-  const [fairwayHitsArray, setFairwayHits] = useState(scores ? scores.map(score => score.fairwayHit) : Array(players.length).fill(false));
-  const [greensInRegulationArray, setGreensInRegulation] = useState(scores ? scores.map(score => score.greensInRegulation) : Array(players.length).fill(false));
+  const [strokesArray, setStrokes] = useState(emptyNumberArray);
+  const [puttsArray, setPutts] = useState(emptyNumberArray);
+  const [fairwayHitsArray, setFairwayHits] = useState(emptyBooleanArray);
+  const [greensInRegulationArray, setGreensInRegulation] = useState(emptyBooleanArray);
+  const [picturesArray, setPictures] = useState(emptyStringArray);
   const [confirmOpen, toggleConfirmOpen] = useState(false);
   const [confirmClearState, toggleConfirmClearState] = useState(false);
   const [loading, toggleLoading] = useState(false);
+  const [picture, setPicture] = useState('');
+  const [cameraOpen, toggleCamera] = useState(false);
+  console.log("picture array: ", picturesArray);
   const clearState = () => {
     setPar(0);
     setStrokes(Array(players.length).fill(0));
@@ -42,6 +63,7 @@ function Hole(props) {
     setGreensInRegulation(Array(players.length).fill(false));
   }
   const handleStrokes = (strokes, index) => {
+    console.log("index of strokes ", index);
     setStrokes(previousStrokes => {
       return [...previousStrokes.slice(0, index), strokes, ...previousStrokes.slice(index+1)];
     });
@@ -61,8 +83,14 @@ function Hole(props) {
       return [...previousGreensInRegulation.slice(0, index), greensInRegulation, ...previousGreensInRegulation.slice(index+1)];
     });
   }
+  const handlePictures = (picture, index) => {
+    console.log("index of picture: ", index);
+    setPictures(previousPictures => {
+      return [...previousPictures.slice(0, index), picture, ...previousPictures.slice(index+1)];
+    });
+  }
   const holeObject = [];
-  const createHoleObject = (player, par, holeNumber, strokes, putts, fairwayHit, greensInRegulation) => {
+  const createHoleObject = (player, par, holeNumber, strokes, putts, fairwayHit, greensInRegulation, picture) => {
     holeObject.push({
       name: player,
       par: parseInt(par),
@@ -70,28 +98,26 @@ function Hole(props) {
       strokes: strokes,
       putts: putts,
       fairwayHit: fairwayHit,
-      greensInRegulation: greensInRegulation
+      greensInRegulation: greensInRegulation,
+      picture: picture
     })
   }
   const submit = () => {
     //player, par, strokes, putts, fairwayHits, greensInRegulation
     toggleLoading(true);
     players.forEach((player, i) => {
-      createHoleObject(player, par, props.match.params.holeNumber, strokesArray[i], puttsArray[i], fairwayHitsArray[i], greensInRegulationArray[i]);
+      createHoleObject(player, par, props.match.params.holeNumber, strokesArray[i], puttsArray[i], fairwayHitsArray[i], greensInRegulationArray[i], picturesArray[i]);
     });
-    console.log("hole object after creation: ", holeObject);
-    
     holeObject.forEach(async (score, i) => {
       console.log("sending this score object to database: ", score);
       await props.game.addHole(score);
       toggleLoading(false);
-      console.log("working through players foreach...");
       if(i === players.length-1){
         console.log("going to previous screen...");
         props.history.go(-1);
       }
     });//closes holeObject.foreach
-    
+
   }//closes submit function
   //create dialogue "Does this look right? With score stuff"
   const confirm = <div align="center">
@@ -102,21 +128,22 @@ function Hole(props) {
         <Typography variant='h6'>Player: {player}</Typography>
         <Typography variant='body2'>Strokes: {strokesArray[i]}</Typography>
         <Typography variant='body2'>Putts: {puttsArray[i]}</Typography>
-        <Typography variant='body2'>Fairyway Hit? {fairwayHitsArray[i] ? "Yes" : "No"}</Typography>
-        <Typography variant='body2'>Greens in Regulation? {greensInRegulationArray[i] ? "Yes" : "No"}</Typography>
+        {fairwayHitsArray[i] ? <Typography variant='body2'>Fairyway Hit</Typography> : null}
+        {greensInRegulationArray[i] ? <Typography variant='body2'>Green in Regulation</Typography> : null}
+        {picturesArray[i] ? <Image src={picturesArray[i]}/> : null}
       </div>
     )}
   </div>
   return (
     <div>
       <Loading open={loading}/>
-      <Button 
+      <Button
       variant="outlined"
       style={{float: "left"}}
       onClick={() => props.history.go(-1)}>
         <BackIcon/>
       </Button>
-      <Button 
+      <Button
       variant="contained"
       color="error"
       style={{float: "right"}}
@@ -125,19 +152,77 @@ function Hole(props) {
       </Button>
       <Typography align="center" variant="h3">Hole #{props.match.params.holeNumber}</Typography>
       <Counter title="PAR" max="5" value={par} onChange={setPar}/>
-      {players.map((player, i) => 
+
+      {/*------------------------------start player map----------------------------*/}
+
+      {players.map((player, i) =>
       <StickyContainer
       key={i}>
         <Sticky>
         {({style}) => (
-        <Typography classes={{root: classes.root}} style={{ ...style, backgroundColor: 'primary', zIndex: 100  }} align="center" variant="h3">{player}</Typography>
+        <Typography classes={{root: classes.root}} style={{ ...style, zIndex: 100  }} align="center" variant="h3">{player}</Typography>
         )}
         </Sticky>
+
       <Counter title="TOTAL STROKES" value={strokesArray[i]} onChange={e => handleStrokes(e, i)}/>
       <Counter title="PUTTS" max={strokesArray[i]-1 > 0 ? strokesArray[i]-1 : 0} value={puttsArray[i]} onChange={e => handlePutts(e, i)}/>
       <SelectBox title="Fairway Hit" checked={fairwayHitsArray[i]} onChange={e => handleFairwayHits(e, i)}/>
-      <SelectBox title="Greens In Regulation" checked={greensInRegulationArray[i]} onChange={e => handleGreensInRegulation(e, i)}/>
-      </StickyContainer>)}
+      <SelectBox title="Green In Regulation" checked={greensInRegulationArray[i]} onChange={e => handleGreensInRegulation(e, i)}/>
+
+    {/*------------------------------------camera stuff--------------------------*/}
+        <div align="center">
+          {picturesArray[i] ?
+            <Fab
+              variant="extended"
+              color="primary"
+              aria-label="Retake"
+              onClick={() => {
+                handlePictures('', i);
+                toggleCamera(true);}}>
+              <Redo style={{marginRight: 10}} />
+              Retake Photo
+            </Fab>
+            :
+            <Fab onClick={() => {
+              console.log("i on fab click: ", i);
+              handlePictures('', i);
+              toggleCamera(true);}}
+              color="primary" aria-label="Photo">
+            <PhotoCamera />
+          </Fab>}
+        </div>
+          <Dialog
+            key={i}
+            open={cameraOpen}
+            fullScreen
+            onCancel={() => toggleCamera(false)}
+          >
+          <Camera
+            onTakePhoto={(pic) => {
+              console.log("i in component: ", i);
+              handlePictures(pic, i)}}
+            picture={picturesArray[i]}
+            />
+          <DialogActions>
+          <Button
+            color="primary"
+            onClick={() => toggleCamera(false)}
+            >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={picturesArray[i] ? false : true}
+            onClick={() => toggleCamera(false)}
+            >
+            Submit
+          </Button>
+
+        </DialogActions>
+        </Dialog>
+        {/*-------------------------------end camera stuff-------------------------------*/}
+      </StickyContainer>)/*---------------------------closes map--------------------------------*/}
       <BlockButton title="Submit Scores" onClick={() => toggleConfirmOpen(true)}/>
       <CustomDialog
         open={confirmOpen}
