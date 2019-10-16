@@ -31,28 +31,28 @@ function ScoreCardWrapper(props) {
   const [tab, switchTab] = useState("Score Card");
   const tabs = [{
     name: "Score Card",
-    icon: <RestoreIcon />
+    icon: <RestoreIcon />,
+    component: <ProviderContext.Consumer>
+                {game => <ScoreCard game={game} />}
+                </ProviderContext.Consumer>
   },
   {
     name: "Map",
-    icon: <MapIcon />
+    icon: <MapIcon />,
+    component: <Map/>
   },
   {
     name: "Overview",
-    icon: <ViewList />
+    icon: <ViewList />,
+    component: <ProviderContext.Consumer>
+                {game => <RoundTable game={game} />}
+                </ProviderContext.Consumer>
   }];
   const bottom = {paddingBottom: '56px'}
   return (
     <div>
       <div style={bottom}>
-        {tab === "Score Card" ? <ProviderContext.Consumer>
-        {game => <ScoreCard game={game} />}
-        </ProviderContext.Consumer>: null}
-        {tab === "Map" ? <Map/> : null}
-        {tab === "Overview" ? 
-        <ProviderContext.Consumer>
-        {game => <RoundTable game={game} />}
-        </ProviderContext.Consumer> : null}
+        {tabs.map(screen => screen.name === tab ? screen.component : null)}
       </div>
       <BottomNavBar currentTab={tab} tabs={tabs} onChange={switchTab}/>
     </div>

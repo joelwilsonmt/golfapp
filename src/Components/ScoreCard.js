@@ -49,7 +49,7 @@ function ScoreCard(props) {
   const [open, toggleOpen] = useState(true);
   const [loading, toggleLoading] = useState(false);
   const [redirect, toggleRedirect] = useState(false);
-
+  console.log("players loaded in scorecard: ", players);
   const playerNames = players ? players.map(player => {return player.name}) : null;
   const numberOfHoles = players ? players[0].holes.length : null;
   const playerScores = players ? players.map(player => {
@@ -103,8 +103,11 @@ function ScoreCard(props) {
       <List>
       {players[0].holes.map((hole, i) =>
         <div key={i+1}>
+
+
         {Object.getOwnPropertyNames(hole).length > 0 ?
-        <ExpansionPanel dense="true">
+        (
+          <ExpansionPanel dense="true">
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Grid container spacing={16}>
               <Grid item xs={4}>
@@ -120,13 +123,13 @@ function ScoreCard(props) {
           <Grid item xs={12}>
             <Typography variant="h5">Par: {hole.par}</Typography>
           </Grid>
-            {players.map((player, i) => {
-              return  <Grid key={i} item xs={6}>
+            {players.map((player, j) => {
+              return  <Grid key={j} item xs={6}>
                 <Typography variant="h5" inline>
                   {player.name}
                 </Typography>
                 <Typography variant="h5" className={player.holes[i].strokes - hole.par > 0 ? classes.overPar : classes.underPar} inline>
-                {` `}({player.holes[i].strokes - hole.par === 0 ? 'Par' : player.holes[i].strokes - hole.par > 0 ? `+${player.holes[i].strokes - hole.par}` : player.holes[i].strokes - hole.par })
+                {` `}({player.holes[i].strokes - hole.par === 0 ? 'Par' : player.holes[j].strokes - hole.par > 0 ? `+${player.holes[i].strokes - hole.par}` : player.holes[i].strokes - hole.par })
                 </Typography>
                 <br/>
                 <Typography style={styles.bold} inline>Strokes:</Typography>
@@ -150,6 +153,7 @@ function ScoreCard(props) {
             </Grid>
           </ExpansionPanelDetails>
         </ExpansionPanel>
+      )
         :
         <ListItem dense button component={Link} to={{pathname: `/${courseName}/hole/${i+1}`, state: {players: playerNames}}}>
           <Grid container spacing={16}>

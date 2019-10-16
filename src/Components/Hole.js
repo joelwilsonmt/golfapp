@@ -11,6 +11,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import { withStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import PageView from '@material-ui/icons/Pageview';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
@@ -44,17 +45,18 @@ function Hole(props) {
   let emptyBooleanArray = scores ? scores.map(score => score.strokes) : Array(players.length).fill(false);
   let emptyStringArray = scores ? scores.map(score => score.strokes) : Array(players.length).fill('');
   const [par, setPar] = useState(props.location.state.par ? props.location.state.par : 0);
-  const [strokesArray, setStrokes] = useState(emptyNumberArray);
-  const [puttsArray, setPutts] = useState(emptyNumberArray);
-  const [fairwayHitsArray, setFairwayHits] = useState(emptyBooleanArray);
-  const [greensInRegulationArray, setGreensInRegulation] = useState(emptyBooleanArray);
-  const [picturesArray, setPictures] = useState(emptyStringArray);
+  const [strokesArray, setStrokes] = useState(scores ? scores.map(score => score.strokes) : Array(players.length).fill(0));
+  const [puttsArray, setPutts] = useState(scores ? scores.map(score => score.putts) : Array(players.length).fill(0));
+  const [fairwayHitsArray, setFairwayHits] = useState(scores ? scores.map(score => score.fairwayHit) : Array(players.length).fill(false));
+  const [greensInRegulationArray, setGreensInRegulation] = useState(scores ? scores.map(score => score.greensInRegulation) : Array(players.length).fill(false));
+  const [picturesArray, setPictures] = useState(scores ? scores.map(score => score.picture) : Array(players.length).fill(''));
   const [confirmOpen, toggleConfirmOpen] = useState(false);
   const [confirmClearState, toggleConfirmClearState] = useState(false);
   const [loading, toggleLoading] = useState(false);
   const [picture, setPicture] = useState('');
   const [pictureIndex, setPictureIndex] = useState(0);
   const [cameraOpen, toggleCamera] = useState(false);
+  const [viewerOpen, toggleViewer] = useState(false);
   const clearState = () => {
     setPar(0);
     setStrokes(Array(players.length).fill(0));
@@ -64,7 +66,6 @@ function Hole(props) {
     setPictures(Array(players.length).fill(''));
   }
   const handleStrokes = (strokes, index) => {
-    console.log("index of strokes ", index);
     setStrokes(previousStrokes => {
       return [...previousStrokes.slice(0, index), strokes, ...previousStrokes.slice(index+1)];
     });
@@ -85,7 +86,6 @@ function Hole(props) {
     });
   }
   const handlePictures = (picture, index) => {
-    console.log("index of picture: ", index);
     setPictures(previousPictures => {
       return [...previousPictures.slice(0, index), picture, ...previousPictures.slice(index+1)];
     });
@@ -173,21 +173,28 @@ function Hole(props) {
     {/*------------------------------------camera stuff--------------------------*/}
         <div align="center">
           {picturesArray[i] ?
-            <Fab
-              variant="extended"
-              color="primary"
-              aria-label="Retake"
-              onClick={() => {
-                console.log("i when retake photo clicked: ", i);
-                handlePictures('', i);
+            <div>
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="Retake"
+                onClick={() => {
+                  handlePictures('', i);
+                  setPictureIndex(i);
+                  toggleCamera(true);}}>
+                <Redo style={{marginRight: 10}} />
+                Retake Photo
+              </Fab>
+              <Fab onClick={() => {
                 setPictureIndex(i);
-                toggleCamera(true);}}>
-              <Redo style={{marginRight: 10}} />
-              Retake Photo
+                toggleViewer(true);}}
+                color="primary" aria-label="Photo">
+              <PageView style={{marginRight: 10}}/>
+              View Photo
             </Fab>
+          </div>
             :
             <Fab onClick={() => {
-              console.log("i on fab click: ", i);
               handlePictures('', i);
               setPictureIndex(i);
               toggleCamera(true);}}
@@ -229,7 +236,8 @@ function Hole(props) {
     >
     <Camera
       onTakePhoto={(pic) => {
-        handlePictures(pic, pictureIndex)}}
+        handlePictures(pic, pictureIndex)
+                            }}
       picture={picturesArray[pictureIndex]}
       />
     <DialogActions>
@@ -253,6 +261,38 @@ function Hole(props) {
 
   </DialogActions>
   </Dialog>
+  {/*----------------------------------------view picutre dialog open; LOOK HERE IF THINGS ARE FUCKING UP-------------*/}
+  <Dialog
+    open={viewerOpen}
+    fullScreen
+  >
+  <Camera
+    picture={picturesArray[pictureIndex]}
+    />
+  <DialogActions>
+  <Button
+    color="primary"
+    onClick={() => {
+      toggleViewer(false);
+    }}
+    >
+    Cancel
+  </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    disabled={picturesArray[pictureIndex] ? false : true}
+    onClick={() => {
+      toggleViewer(false);
+      toggleCamera(true);
+    }}
+    >
+    Retake
+  </Button>
+
+  </DialogActions>
+  </Dialog>
+
     </div>
   );
 }

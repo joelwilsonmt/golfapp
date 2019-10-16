@@ -50,7 +50,7 @@ function Camera(props) {
         onTakePhoto = { (dataUri) => { onTakePhoto(dataUri); } }
         idealFacingMode = {FACING_MODES.USER}
         imageType = {IMAGE_TYPES.JPG}
-        idealResolution = {{width: 500, height: 900}}
+        idealResolution = {{width: 200, height: 300}}
 
         />}
   </div>
