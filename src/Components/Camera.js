@@ -11,6 +11,7 @@ import BlockButton from './BlockButton';
 
 
 function Camera(props) {
+  const [pictureTaken, setPictureTaken] = useState(props.picture ? true : false)
   const onTakePhoto = (data) => {
     //setPicture(data);
     props.onTakePhoto(data);
@@ -32,7 +33,7 @@ function Camera(props) {
   }};
   return (
     <div>
-    {props.picture ?
+    {props.picture && pictureTaken ?
       <div style={styles.container}>
         <Image width="100%" src={props.picture}/>
         <Fab
@@ -40,14 +41,17 @@ function Camera(props) {
           color="secondary"
           aria-label="Retake"
           style={styles.fab}
-          onClick={() => {onTakePhoto('')}}>
+          onClick={() => {
+            setPictureTaken(false)
+            props.switchToCamera()
+          }}>
           <Redo style={styles.extendedIcon} />
           Retake
         </Fab>
       </div>
       :
       <HTMLCamera
-        onTakePhoto = { (dataUri) => { onTakePhoto(dataUri); } }
+        onTakePhoto = {photo => onTakePhoto(photo)}
         idealFacingMode = {FACING_MODES.USER}
         imageType = {IMAGE_TYPES.JPG}
         idealResolution = {{width: 200, height: 300}}

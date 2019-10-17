@@ -28,7 +28,7 @@ function Map(props) {
         <img alt="tee" width="60" style={offset} src="https://unixtitan.net/images/golf-clipart-golf-ball-1.png"/>
       </Typography>
     </GoogleMapReact>
-    : <Loading />}
+    : <Loading open/>}
   </div>
   );
 }

@@ -14,6 +14,7 @@ import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import PageView from '@material-ui/icons/Pageview';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
+import Grid from '@material-ui/core/Grid';
 
 import Redo from '@material-ui/icons/Replay';
 
@@ -49,6 +50,7 @@ function Hole(props) {
   const [puttsArray, setPutts] = useState(scores ? scores.map(score => score.putts) : Array(players.length).fill(0));
   const [fairwayHitsArray, setFairwayHits] = useState(scores ? scores.map(score => score.fairwayHit) : Array(players.length).fill(false));
   const [greensInRegulationArray, setGreensInRegulation] = useState(scores ? scores.map(score => score.greensInRegulation) : Array(players.length).fill(false));
+  const [currentPicture, setCurrentPicture] = useState('')
   const [picturesArray, setPictures] = useState(scores ? scores.map(score => score.picture) : Array(players.length).fill(''));
   const [confirmOpen, toggleConfirmOpen] = useState(false);
   const [confirmClearState, toggleConfirmClearState] = useState(false);
@@ -173,26 +175,36 @@ function Hole(props) {
     {/*------------------------------------camera stuff--------------------------*/}
         <div align="center">
           {picturesArray[i] ?
-            <div>
+            <Grid container spacing={16}>
+              <Grid item xs={6}>
               <Fab
                 variant="extended"
                 color="primary"
                 aria-label="Retake"
                 onClick={() => {
-                  handlePictures('', i);
+                  // handlePictures('', i);
                   setPictureIndex(i);
                   toggleCamera(true);}}>
                 <Redo style={{marginRight: 10}} />
                 Retake Photo
               </Fab>
-              <Fab onClick={() => {
-                setPictureIndex(i);
-                toggleViewer(true);}}
-                color="primary" aria-label="Photo">
+            </Grid>
+            <Grid item xs={6}>
+              <Fab
+                variant="extended"
+                color="primary"
+                aria-label="Photo"
+                onClick={() => {
+                setCurrentPicture(picturesArray[i])
+                setPictureIndex(i)
+                toggleViewer(true)
+              }}
+                >
               <PageView style={{marginRight: 10}}/>
               View Photo
             </Fab>
-          </div>
+          </Grid>
+          </Grid>
             :
             <Fab onClick={() => {
               handlePictures('', i);
@@ -234,18 +246,21 @@ function Hole(props) {
       open={cameraOpen}
       fullScreen
     >
-    <Camera
+    {cameraOpen && <Camera
       onTakePhoto={(pic) => {
-        handlePictures(pic, pictureIndex)
-                            }}
-      picture={picturesArray[pictureIndex]}
-      />
+        setCurrentPicture(pic)
+        //handlePictures(pic, pictureIndex)
+        toggleCamera(false)
+        toggleViewer(true)
+      }}
+      />}
     <DialogActions>
     <Button
       color="primary"
       onClick={() => {
         toggleCamera(false);
-        handlePictures('', pictureIndex);
+        setCurrentPicture('')
+        // handlePictures('', pictureIndex);
       }}
       >
       Cancel
@@ -253,12 +268,15 @@ function Hole(props) {
     <Button
       variant="contained"
       color="primary"
-      disabled={picturesArray[pictureIndex] ? false : true}
-      onClick={() => toggleCamera(false)}
+      disabled={currentPicture ? false : true}
+      onClick={() => {
+        toggleCamera(false)
+        handlePictures(currentPicture, pictureIndex)
+        setCurrentPicture('')
+      }}
       >
       Submit
     </Button>
-
   </DialogActions>
   </Dialog>
   {/*----------------------------------------view picutre dialog open; LOOK HERE IF THINGS ARE FUCKING UP-------------*/}
@@ -266,9 +284,13 @@ function Hole(props) {
     open={viewerOpen}
     fullScreen
   >
-  <Camera
-    picture={picturesArray[pictureIndex]}
-    />
+  {viewerOpen &&<Camera
+    picture={currentPicture}
+    switchToCamera={() => {
+      toggleViewer(false)
+      toggleCamera(true)
+    }}
+    />}
   <DialogActions>
   <Button
     color="primary"
@@ -276,20 +298,32 @@ function Hole(props) {
       toggleViewer(false);
     }}
     >
-    Cancel
+    Go Back
   </Button>
   <Button
     variant="contained"
     color="primary"
-    disabled={picturesArray[pictureIndex] ? false : true}
+    disabled={currentPicture ? false : true}
     onClick={() => {
       toggleViewer(false);
       toggleCamera(true);
+      setCurrentPicture('')
     }}
     >
     Retake
   </Button>
-
+  <Button
+    variant="contained"
+    color="primary"
+    disabled={currentPicture ? false : true}
+    onClick={() => {
+      toggleViewer(false)
+      handlePictures(currentPicture, pictureIndex)
+      setCurrentPicture('')
+    }}
+    >
+    Submit
+  </Button>
   </DialogActions>
   </Dialog>
 
