@@ -19,7 +19,7 @@ router.put("/", function(req, res) {
   var data = req.body;
   var name = toTitleCase(data.name);
   //findOrCreate({query}, {document to insert}, [options], [callback])
-  User.findOrCreate({ name: name }, {appendToArray: false, saveOptions: {validateBeforeSave: false}}, 
+  User.findOrCreate({ name: name }, {appendToArray: false, saveOptions: {validateBeforeSave: false}},
     (err, result) => {
 	    if(err){console.log(err);}
       console.log("successful find user by name: ", result.name, "amending hole ", data.holeNumber);
@@ -31,9 +31,12 @@ router.put("/", function(req, res) {
             strokes: data.strokes,
             putts: data.putts,
             fairwayHit: data.fairwayHit,
-            greensInRegulation: data.greensInRegulation//,
-            //picture: { data: Buffer, contentType: String }
+            greensInRegulation: data.greensInRegulation,
+            picture: Buffer.from(data.picture).toString('base64')
           }
+					console.log("picture before saving to db: ", holeObj.picture)
+					console.log("picture type ", typeof holeObj.picture)
+					console.log("length: ", holeObj.picture.length)
           result.games[i].holes[data.holeNumber-1] = holeObj;
           result.markModified('holes');
           result.save();

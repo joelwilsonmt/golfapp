@@ -129,7 +129,7 @@ function ScoreCard(props) {
                   {player.name}
                 </Typography>
                 <Typography variant="h5" className={player.holes[i].strokes - hole.par > 0 ? classes.overPar : classes.underPar} inline>
-                {` `}({player.holes[i].strokes - hole.par === 0 ? 'Par' : player.holes[j].strokes - hole.par > 0 ? `+${player.holes[i].strokes - hole.par}` : player.holes[i].strokes - hole.par })
+                {` `}({player.holes[i].strokes - hole.par === 0 ? 'Par' : player.holes[i].strokes - hole.par > 0 ? `+${player.holes[i].strokes - hole.par}` : player.holes[i].strokes - hole.par })
                 </Typography>
                 <br/>
                 <Typography style={styles.bold} inline>Strokes:</Typography>

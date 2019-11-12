@@ -175,8 +175,7 @@ function Hole(props) {
     {/*------------------------------------camera stuff--------------------------*/}
         <div align="center">
           {picturesArray[i] ?
-            <Grid container spacing={16}>
-              <Grid item xs={6}>
+            <div>
               <Fab
                 variant="extended"
                 color="primary"
@@ -185,11 +184,9 @@ function Hole(props) {
                   // handlePictures('', i);
                   setPictureIndex(i);
                   toggleCamera(true);}}>
-                <Redo style={{marginRight: 10}} />
+                <Redo style={{marginRight: 20}} />
                 Retake Photo
               </Fab>
-            </Grid>
-            <Grid item xs={6}>
               <Fab
                 variant="extended"
                 color="primary"
@@ -203,8 +200,7 @@ function Hole(props) {
               <PageView style={{marginRight: 10}}/>
               View Photo
             </Fab>
-          </Grid>
-          </Grid>
+          </div>
             :
             <Fab onClick={() => {
               handlePictures('', i);
@@ -284,7 +280,7 @@ function Hole(props) {
     open={viewerOpen}
     fullScreen
   >
-  {viewerOpen &&<Camera
+  {viewerOpen && <Camera
     picture={currentPicture}
     switchToCamera={() => {
       toggleViewer(false)
