@@ -1,5 +1,6 @@
 import React,  { useState } from 'react';
 import {Redirect, Link} from "react-router-dom";
+import axios from "axios"
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -15,11 +16,23 @@ const RecoverGame = (props) => {
   const [open, toggleOpen] = useState(store ? true : false);
   const [redirect, toggleRedirect] = useState(false);
   const [loading, toggleLoading] = useState(false);
-  const recover = () => {
+  const recover = async () => {
     toggleOpen(false);
     toggleLoading(true);
-    props.game.recoverGame(store);
-    toggleRedirect(true);
+    // THIS WORKS TO LOAD FROM LOCALSTORAGE: 
+    // props.game.recoverGame(store)
+    // toggleRedirect(true)
+
+
+
+    // TODO: WHY ISN'T THIS ASYNCING THE GAME VALUE?
+    const game = await props.game.getCurrentGameForUser("Joel")
+    console.log("get current game result: ", game) //UNDEFINED??!?
+    // await props.game.recoverGame(game)
+    // toggleRedirect(true)
+
+
+
   }
   if(!store){
     return null;

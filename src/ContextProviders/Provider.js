@@ -1,6 +1,9 @@
 
 import React from 'react';
 import axios from 'axios';
+import getAllData from './functions/getAllData'
+import getPlayerData from './functions/getPlayerData'
+import getCurrentGameForUser from './functions/getCurrentGameForUser'
 
 
 export var ProviderContext = React.createContext();
@@ -8,6 +11,9 @@ export var ProviderContext = React.createContext();
 class Provider extends React.Component {
   constructor(props) {
     super(props);
+    this.getAllData = getAllData
+    this.getPlayerData = getPlayerData
+    this.getCurrentGameForUser = getCurrentGameForUser
     this.authorize = () => {
       this.setState({
           authorized: true
@@ -83,7 +89,10 @@ class Provider extends React.Component {
         setCourse: this.setCourse,
         addHole: this.addHole,
         recoverGame: this.recoverGame,
-        clearLocalStorage: this.clearLocalStorage
+        clearLocalStorage: this.clearLocalStorage,
+        getAllData: this.getAllData,
+        getPlayerData: this.getPlayerData,
+        getCurrentGameForUser: this.getCurrentGameForUser
     }
   }
 

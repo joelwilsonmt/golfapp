@@ -15,7 +15,7 @@ let UserSchema = mongoose.Schema(
         putts: Number,
         fairwayHit: Boolean,
         greensInRegulation: Boolean,
-        picture: { data: Buffer, contentType: String }
+        picture: String // { data: Buffer, contentType: String }
       }],
       courseName: String,
       date: Date,
