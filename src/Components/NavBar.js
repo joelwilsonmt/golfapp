@@ -2,6 +2,7 @@ import React, { useState }  from 'react';
 import {Link} from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import styled from "styled-components";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,7 +17,6 @@ import ListIcon from '@material-ui/icons/ListAlt';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-
 
 
 const styles = {
@@ -37,7 +37,6 @@ const styles = {
 };
 
 function Home(props) {
-
   const [open, toggleDrawer] = useState(false);
   const icon = true;
   const { classes } = props;
@@ -79,7 +78,7 @@ function Home(props) {
         {icon ? <img width="30" src='https://i2.wp.com/justinrussogolfacademy.com/files/2015/11/jr-favicon.png'/> : <MenuIcon/>}
           </IconButton>
             <Typography inline className={classes.title} variant="h5">
-              {`  406.golf`} {props.game.courseName ? ` - ${props.game.courseName}` : null}
+              {`406.golf`} {props.game.courseName ? ` - ${props.game.courseName}` : null}
             </Typography>
         </Toolbar>
       </AppBar>

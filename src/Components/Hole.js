@@ -15,13 +15,23 @@ import PageView from '@material-ui/icons/Pageview';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import Grid from '@material-ui/core/Grid';
-
 import Redo from '@material-ui/icons/Replay';
-
+import styled from "styled-components";
 
 import Camera from './Camera';
-import Image from './Image'
+import Image from './Image';
 
+const HoleNumberText = styled.div`
+  padding-top: 15%;
+`
+const StickyWrapper = styled.div`
+  margin: 10% 0;
+`
+const TwoColumns = styled.div`
+display: grid;
+grid-template-columns: 1fr 1fr;
+margin: 5% 0;
+`
 
 const styles = {
   root: {
@@ -137,6 +147,9 @@ function Hole(props) {
       </div>
     )}
   </div>
+
+
+  // ----------------------------------------------------- Begin Return Function -----------------------------------------
   return (
     <div>
       <Loading open={loading}/>
@@ -146,6 +159,7 @@ function Hole(props) {
       onClick={() => props.history.go(-1)}>
         <BackIcon/>
       </Button>
+
       <Button
       variant="contained"
       color="error"
@@ -153,40 +167,41 @@ function Hole(props) {
       onClick={() => toggleConfirmClearState(true)}>
         CLEAR
       </Button>
-      <Typography align="center" variant="h3">Hole #{props.match.params.holeNumber}</Typography>
+      <HoleNumberText>
+        <Typography align="center" variant="h3">Hole #{props.match.params.holeNumber}</Typography>
+      </HoleNumberText>
+
       <Counter title="PAR" max="5" value={par} onChange={setPar}/>
 
-      {/*------------------------------start player map----------------------------*/}
+      {/*------------------------------start player loop sticky section----------------------------*/}
 
       {players.map((player, i) => {
         return <StickyContainer
           key={i}>
+          <StickyWrapper>
         <Sticky>
         {({style}) => (
-        <Typography classes={{root: classes.root}} style={{ ...style, zIndex: 100  }} align="center" variant="h3">{player}</Typography>
+        <Typography classes={{root: classes.root}} style={{ ...style, zIndex: 100, padding: "3% 0"  }} align="center" variant="h3">{player}</Typography>
         )}
         </Sticky>
+        </StickyWrapper>
 
       <Counter title="TOTAL STROKES" value={strokesArray[i]} onChange={e => handleStrokes(e, i)}/>
       <Counter title="PUTTS" max={strokesArray[i]-1 > 0 ? strokesArray[i]-1 : 0} value={puttsArray[i]} onChange={e => handlePutts(e, i)}/>
-      <SelectBox title="Fairway Hit" checked={fairwayHitsArray[i]} onChange={e => handleFairwayHits(e, i)}/>
-      <SelectBox title="Green In Regulation" checked={greensInRegulationArray[i]} onChange={e => handleGreensInRegulation(e, i)}/>
+      <TwoColumns>
+        <SelectBox title="Fairway Hit" checked={fairwayHitsArray[i]} onChange={e => handleFairwayHits(e, i)}/>
+        <SelectBox title="Green In Regulation" checked={greensInRegulationArray[i]} onChange={e => handleGreensInRegulation(e, i)}/>
+      </TwoColumns>
 
     {/*------------------------------------camera stuff--------------------------*/}
         <div align="center">
           {picturesArray[i] ?
-            <div>
-              <Fab
-                variant="extended"
-                color="primary"
-                aria-label="Retake"
-                onClick={() => {
-                  // handlePictures('', i);
-                  setPictureIndex(i);
-                  toggleCamera(true);}}>
-                <Redo style={{marginRight: 20}} />
-                Retake Photo
-              </Fab>
+            <TwoColumns
+              style={{
+                "gridColumnGap": 20,
+                "margin": "10% 3%"
+              }}
+              >
               <Fab
                 variant="extended"
                 color="primary"
@@ -200,7 +215,18 @@ function Hole(props) {
               <PageView style={{marginRight: 10}}/>
               View Photo
             </Fab>
-          </div>
+            <Fab
+              variant="extended"
+              color="primary"
+              aria-label="Retake"
+              onClick={() => {
+                // handlePictures('', i);
+                setPictureIndex(i);
+                toggleCamera(true);}}>
+              <Redo style={{marginRight: 20}} />
+              Retake Photo
+            </Fab>
+          </TwoColumns>
             :
             <Fab onClick={() => {
               handlePictures('', i);
@@ -212,7 +238,8 @@ function Hole(props) {
         </div>
 
         {/*-------------------------------end camera stuff-------------------------------*/}
-      </StickyContainer>})/*---------------------------closes map--------------------------------*/}
+      </StickyContainer>})
+    /*---------------------------closes map--------------------------------*/}
       <BlockButton title="Submit Scores" onClick={() => toggleConfirmOpen(true)}/>
       <CustomDialog
         open={confirmOpen}
