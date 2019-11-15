@@ -24,19 +24,20 @@ router.put("/", function(req, res) {
 	    if(err){console.log(err);}
       console.log("successful find user by name: ", result.name, "amending hole ", data.holeNumber);
       for (var i = 0; i < result.games.length; i++){
-        if(result.games[i].courseName === data.courseName && result.games[i].active === true){
-          console.log("found by course name ", result.games[i].courseName, " with active status");
+        if(result.games[i].gameId === data.gameId && result.games[i].active === true){
+          console.log("found by gameId", result.games[i].gameId, " with active status");
           var holeObj = {
+						modified: data.modified,
             par: data.par,
             strokes: data.strokes,
             putts: data.putts,
             fairwayHit: data.fairwayHit,
             greensInRegulation: data.greensInRegulation,
-            picture: Buffer.from(data.picture).toString('base64')
+            picture: data.picture
           }
-					console.log("picture before saving to db: ", holeObj.picture)
-					console.log("picture type ", typeof holeObj.picture)
+					console.log("picture in hole object on server:  ", holeObj.picture)
 					console.log("length: ", holeObj.picture.length)
+					console.log("and date modded: ", holeObj.modified)
           result.games[i].holes[data.holeNumber-1] = holeObj;
           result.markModified('holes');
           result.save();

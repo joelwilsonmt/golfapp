@@ -27,6 +27,7 @@ router.put("/", function(req, res) {
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
     const newGame = {
+			gameId: data.gameId,
       courseName: data.courseName,
       active: data.active,
 			players: data.players,

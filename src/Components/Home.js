@@ -4,12 +4,10 @@ import RecoverGame from './RecoverGame';
 import {ProviderContext} from './../ContextProviders/Provider';
 
 function Home(props) {
-  
+
   return (
     <div>
-      <ProviderContext.Consumer>
-        {game =><RecoverGame game={game}/>}
-      </ProviderContext.Consumer>
+
       <ul>
       <li>
         <Link to="/">Home</Link>
@@ -30,11 +28,19 @@ function Home(props) {
         <Link to="/newround/">New Round Screen</Link>
       </li>
       <li>
-        Name: 
+        <Link to="/listusers/">See Users</Link>
+      </li>
+      <li>
+        <Link to={`/listrounds/${"Joel"}`}>See games for player Joel</Link>
+      </li>
+      <li>
+        Name:
       </li>
     </ul>
   </div>
   );
 }
-
+// <ProviderContext.Consumer>
+//   {game =><RecoverGame game={game}/>}
+// </ProviderContext.Consumer>
 export default Home;

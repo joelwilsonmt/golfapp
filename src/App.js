@@ -9,6 +9,8 @@ import Start from './Components/Start';
 import Welcome from './Components/Welcome';
 import NewRound from './Components/NewRound';
 import RoundReview from './Components/RoundReview';
+import ListRounds from './Components/ListRounds';
+import ListUsers from './Components/ListUsers';
 import { BrowserRouter, Route} from "react-router-dom";
 import { AnimatedSwitch } from 'react-router-transition';
 import {ProviderContext} from './ContextProviders/Provider';
@@ -27,6 +29,8 @@ function App(props) {
           <Route path="/scorecard/:courseName" render={(props) => <ScoreCardWrapper game={game} {...props}/>}/>
           <Route path="/start/" component={Start} />
           <Route path="/roundreview/" render={(props) => <RoundReview game={game} {...props}/>}/>
+          <Route path="/listrounds/:name" render={(props) => <ListRounds game={game} {...props}/>}/>
+          <Route path="/listusers/" render={(props) => <ListUsers game={game} {...props}/>}/>
           <Route path="/welcome/" component={Welcome} />
           <Route path="/newround/" render={(props) => <NewRound game={game} {...props}/>} />
         </BrowserRouter>

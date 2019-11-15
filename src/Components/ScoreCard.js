@@ -43,15 +43,15 @@ const styles = theme => ({
 
 function ScoreCard(props) {
   const {classes} = props;
-  const game = props.game;
+  const game = props.game //getGameFromLocalStorage()
   const courseName = game.courseName;
   const players = game.players;
   const [open, toggleOpen] = useState(true);
   const [loading, toggleLoading] = useState(false);
   const [redirect, toggleRedirect] = useState(false);
-  console.log("players loaded in scorecard: ", players);
   const playerNames = players ? players.map(player => {return player.name}) : null;
   const numberOfHoles = players ? players[0].holes.length : null;
+
   const playerScores = players ? players.map(player => {
     let totalScore = 0;
     player.holes.forEach(hole => {
@@ -59,11 +59,13 @@ function ScoreCard(props) {
     });
     return totalScore;
   }) : null;
-  const styles={
-    bold: {
-      fontWeight: "bold"
-    }
+
+  const recoverFromLocalStorage = () => {
+    console.log("recovering from localStorage", localStorage)
+    const game = props.game.getGameFromLocalStorage()
+    props.game.recoverGame(game)
   }
+
   const submitScores = () => {
     toggleLoading(true);
     const finishRoundRoute = process.env.REACT_APP_BACK_END_SERVER + 'finishRound';
@@ -80,12 +82,37 @@ function ScoreCard(props) {
 
     })
   }
+
   const bottom = {paddingBottom: '10vh'};
+  const styles={
+    bold: {
+      fontWeight: "bold"
+    }
+  }
+  // <ProviderContext.Consumer>
+  //   {game =><RecoverGame game={game}/>}
+  // </ProviderContext.Consumer>
   if (!players){
     return (
-        <ProviderContext.Consumer>
-          {game =><RecoverGame game={game}/>}
-        </ProviderContext.Consumer>
+      <div>
+
+        <p>Players not found. Here{`'`}s a button to recover games by user name:</p>
+          <Button
+          fullWidth
+          color="primary"
+          variant="contained"
+          component={ Link }
+          to={{pathname: `/listusers/`}}>
+            See All Users
+          </Button>
+          <Button
+          fullWidth
+          color="primary"
+          variant="contained"
+          onClick={() => recoverFromLocalStorage()}>
+            Recover from Local Storage
+          </Button>
+        </div>
     );
   }
   else {
@@ -104,8 +131,7 @@ function ScoreCard(props) {
       {players[0].holes.map((hole, i) =>
         <div key={i+1}>
 
-
-        {Object.getOwnPropertyNames(hole).length > 0 ?
+        {hole.modified ?
         (
           <ExpansionPanel dense="true">
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

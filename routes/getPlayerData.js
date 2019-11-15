@@ -11,7 +11,7 @@ var toTitleCase = function (str) {
 	return str.join(' ');
 };
 
-router.put("/", function(req, response) {
+router.put("/", (req, response) => {
   console.log(
     "-------------------get player data route accessed @ " + new Date() + "----------------------------------"
   );
@@ -19,8 +19,10 @@ router.put("/", function(req, response) {
   var data = req.body;
   var name = toTitleCase(data.name);
   //findOrCreate({query}, {document to insert}, [options], [callback])
-	User.find({ name: name }, /* {name: name}, */ (err, result) => {
-	if(err){console.log(err);}
+	User.find({ name: name }, (err, result) => {
+		if(err){
+			console.log(err);
+		}
     console.log("successful find user by name: ", result);
     response.status(200).send(result);
   });

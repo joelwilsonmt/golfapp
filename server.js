@@ -8,6 +8,7 @@ var finishRound = require("./routes/finishRound");
 var getPlayerData = require("./routes/getPlayerData");
 var getAllData = require("./routes/getAllData");
 var getCurrentGameForUser = require("./routes/getCurrentGameForUser");
+var getGameById = require("./routes/getGameById");
 
 var app = express();
 var http = require("http").Server(app);
@@ -20,6 +21,7 @@ app.use("/finishRound", finishRound);
 app.use("/getPlayerData", getPlayerData);
 app.use("/getAllData", getAllData);
 app.use("/getCurrentGameForUser", getCurrentGameForUser);
+app.use("/getGameById", getGameById);
 
 let port = process.env.PORT || 3001;
 
