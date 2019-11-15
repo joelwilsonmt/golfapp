@@ -7,7 +7,6 @@ const Loading = (props) => {
   return (
     <Dialog
     open={props.open}
-    disableEscapeKeyDown
     disableBackdropClick
     aria-labelledby="form-dialog-title"
     fullWidth
@@ -21,3 +20,4 @@ const Loading = (props) => {
 }
 
 export default Loading;
+//disableEscapeKeyDown

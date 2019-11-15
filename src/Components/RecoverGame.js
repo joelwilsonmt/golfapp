@@ -16,23 +16,21 @@ const RecoverGame = (props) => {
   const [open, toggleOpen] = useState(store ? true : false);
   const [redirect, toggleRedirect] = useState(false);
   const [loading, toggleLoading] = useState(false);
-  const recover = async () => {
+  const recoverFromLocalStorage = async () => {
     toggleOpen(false);
     toggleLoading(true);
-    // THIS WORKS TO LOAD FROM LOCALSTORAGE: 
-    // props.game.recoverGame(store)
-    // toggleRedirect(true)
-
-
-
-    // TODO: WHY ISN'T THIS ASYNCING THE GAME VALUE?
-    const game = await props.game.getCurrentGameForUser("Joel")
-    console.log("get current game result: ", game) //UNDEFINED??!?
-    // await props.game.recoverGame(game)
-    // toggleRedirect(true)
-
-
-
+    props.game.recoverGame(store)
+    toggleRedirect(true)
+    // TODO: once you are loading {game} from server, see if picture blob is
+    // being stored correctly!!!!!!!!!!!!!!!
+  }
+  const recoverFromServer = async () => {
+    toggleOpen(false);
+    toggleLoading(true);
+    const game = await props.game.getGameById(store[0].gameId)
+    console.log("get current game result: ", game)
+    props.game.recoverGame(game)
+    toggleRedirect(true)
   }
   if(!store){
     return null;
@@ -65,8 +63,14 @@ const RecoverGame = (props) => {
           <Button
             color="primary"
             variant="contained"
-            onClick={() => recover()}>
-              Resume Round
+            onClick={() => recoverFromLocalStorage()}>
+              Resume Round from LOCALSTORAGE
+          </Button>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => recoverFromServer()}>
+              Resume Round from SERVER
           </Button>
         </DialogActions>
         {redirect ? <Redirect to={{ pathname: `/scorecard/${store[0].courseName}` }} /> : null}

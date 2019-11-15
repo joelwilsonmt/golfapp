@@ -1,4 +1,4 @@
-import React,  { useState } from 'react';
+import React,  { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import BlockButton from './BlockButton';
 import CustomDialog from './CustomDialog';
@@ -9,6 +9,9 @@ import axios from 'axios';
 require('dotenv').config();
 
 function NewRound(props) {
+  useEffect(() => {
+      props.game.clearLocalStorage();
+  }, [])
   const [startOpen, toggleStartOpen] = useState(false);
   const [moreOpen, toggleMoreOpen] = useState(false);
   const [courseNameOpen, toggleCourseNameOpen] = useState(false);
@@ -44,10 +47,13 @@ function NewRound(props) {
   }
   const addToServer = async () => {
     toggleLoading(true);
+    // generate gameId:
+    const gameId = Math.floor((Math.random() * 100000) + 1).toString()
     const userRoute = process.env.REACT_APP_BACK_END_SERVER + 'user';
     playerNames.forEach(async (name, i) => {
-    console.log("sending " + name + " to database");
+    console.log("sending " + name + " and gameId " + gameId + " to database");
     await axios.put(userRoute, {
+      gameId: gameId,
       name: name,
       courseName: courseName,
       players: playerNames,
@@ -58,6 +64,7 @@ function NewRound(props) {
         res.data.holes = numberHoles;
         //set users and course in provider:
         props.game.setCourse(courseName);
+        props.game.setGameId(gameId);
         props.game.addUsers(res.data);
 
         if(i === playerNames.length-1){

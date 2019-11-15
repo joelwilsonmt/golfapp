@@ -105,7 +105,9 @@ function Hole(props) {
   const holeObject = [];
   const createHoleObject = (player, par, holeNumber, strokes, putts, fairwayHit, greensInRegulation, picture) => {
     holeObject.push({
+      modified: new Date(),
       name: player,
+      gameId: props.game.gameId,
       par: parseInt(par),
       holeNumber: parseInt(holeNumber),
       strokes: strokes,

@@ -7,9 +7,11 @@ let UserSchema = mongoose.Schema(
   {
     name: String,
     games: [{
+      gameId: String,
       active: Boolean,
       players: [String],
       holes: [{
+        modified: Date,
         par: Number,
         strokes: Number,
         putts: Number,
