@@ -6,6 +6,7 @@ import getPlayerData from './functions/getPlayerData'
 import getCurrentGameForUser from './functions/getCurrentGameForUser'
 import getGameById from './functions/getGameById'
 import getAllPlayerNamesInDB from './functions/getAllPlayerNamesInDB'
+import finishRound from './functions/finishRound'
 
 
 export var ProviderContext = React.createContext();
@@ -117,10 +118,6 @@ class Provider extends React.Component {
       console.log("local storage and provider data cleared");
     }
 
-    this.finishRound = () => {
-      console.log("round finished...");
-    }
-
     this.state = {
         addUsers : this.addUsers,
         authorize: this.authorize,
@@ -134,7 +131,8 @@ class Provider extends React.Component {
         getGameById: this.getGameById,
         setGameId: this.setGameId,
         getAllPlayerNamesInDB: this.getAllPlayerNamesInDB,
-        getGameFromLocalStorage: this.getGameFromLocalStorage
+        getGameFromLocalStorage: this.getGameFromLocalStorage,
+        finishRound: finishRound
     }
   }
 

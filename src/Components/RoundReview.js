@@ -27,7 +27,8 @@ function RoundReview(props) {
   const handleClick = () => {
     console.log("clearing local storage...");
     console.log("also, props: ", props);
-    props.game.clearLocalStorage();
+    props.game.finishRound(props.game.players[0].gameId)
+    // props.game.clearLocalStorage();
   }
   const appBar = {
     top: 'auto',
@@ -43,12 +44,13 @@ function RoundReview(props) {
         <AppBar position="fixed" color="primary" style={appBar}>
           <BlockButton
           title="FINISH"
-          link={`/`}
+
           onClick={() => handleClick()}
           />
       </AppBar>
     </div>
   );
 }
+// link={`/`}
 
 export default RoundReview;

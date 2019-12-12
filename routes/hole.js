@@ -35,7 +35,6 @@ router.put("/", function(req, res) {
             greensInRegulation: data.greensInRegulation,
             picture: data.picture
           }
-					console.log("picture in hole object on server:  ", holeObj.picture)
 					console.log("length: ", holeObj.picture.length)
 					console.log("and date modded: ", holeObj.modified)
           result.games[i].holes[data.holeNumber-1] = holeObj;

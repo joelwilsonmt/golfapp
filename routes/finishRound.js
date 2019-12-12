@@ -2,35 +2,38 @@ var express = require("express");
 var router = express.Router();
 
 var User = require('../models/user');
-//const findOrCreate = require('mongoose-find-or-create');
-var toTitleCase = function (str) {
-	str = str.toLowerCase().split(' ');
-	for (var i = 0; i < str.length; i++) {
-		str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
-	}
-	return str.join(' ');
-};
 
-router.put("/", function(req, res) {
+router.put("/", (req, response) => {
   console.log(
-    "------------------- finish round route accessed @ " + new Date() + "----------------------------------"
+    "------------------- finishRound route accessed @ " + new Date() + "----------------------------------"
   );
   console.log(req.body);
   var data = req.body;
-  var name = toTitleCase(data.name);
-  //findOrCreate({query}, {document to insert}, [options], [callback])
-  User.findOrCreate({ name: name }, {appendToArray: false, saveOptions: {validateBeforeSave: false}},
-    (err, result) => {
-	    if(err){console.log(err);}
-      console.log("successful find user by name: ", result.name, "completing course ", data.courseName);
-      for (var i = 0; i < result.games.length; i++){
-        if(result.games[i].courseName === data.courseName && result.games[i].active === true){
-          console.log("found by course name ", result.games[i].courseName, " with active status");
-          result.games[i].active = false;
-          result.save();
-          res.status(200).send(result);
-        }
-      }
+  var gameId = data.gameId;
+	console.log("searching by ", gameId)
+	//{ name: 1, "games.gameId.$": 1 }
+	User.find({'games.gameId': gameId}, { name: 1, "games.gameId.$": 1 }, (err, results) => {
+		var serverReturn = []
+		if(err)
+			{
+				console.log(err);
+			}
+			console.log("finish round rounds: ", results[0].games)
+		// sets all participants' games to active: false:
+		results.forEach(async (result, index) => {
+			console.log("searching by game id in loop: ", result.games[0].gameId)
+			await User.findOne({name: result.name, 'games.gameId': result.games[0].gameId}, { name: 1, "games.gameId.$": 1 }, (error, res) => {
+				console.log("find one result in loop: ", res)
+				if(err){console.log("findone loop err: ", err)}
+				res.games[0].active = false;
+				console.log("active before save: ", res.games[0].active)
+				res.save()
+				serverReturn.push(res)
+				if(index === results.length - 1){
+					response.status(200).send(serverReturn);
+				}
+			})
+		})
   });
 }); //closes router.put
 
