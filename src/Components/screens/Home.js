@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import RecoverGame from './RecoverGame';
-import {ProviderContext} from './../ContextProviders/Provider';
+import {ProviderContext} from '../../ContextProviders/Provider';
 
 function Home(props) {
 

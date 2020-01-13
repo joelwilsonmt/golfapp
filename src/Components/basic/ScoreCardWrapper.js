@@ -18,11 +18,11 @@ import RestoreIcon from '@material-ui/icons/Restore';
 import MapIcon from '@material-ui/icons/Map';
 import ViewList from '@material-ui/icons/ViewList';
 
-import ScoreCard from './ScoreCard';
-import Map from './Map';
-import RoundTable from './RoundTable';
-import RecoverGame from './RecoverGame';
-import {ProviderContext} from '../ContextProviders/Provider';
+import ScoreCard from '../screens/ScoreCard';
+import Map from '../screens/Map';
+import RoundTable from '../screens/RoundTable';
+import RecoverGame from '../screens/RecoverGame';
+import {ProviderContext} from '../../ContextProviders/Provider';
 import BottomNavBar from './BottomNavBar';
 require('dotenv').config();
 

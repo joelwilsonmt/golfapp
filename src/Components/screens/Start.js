@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import BlockButton from './BlockButton';
+import BlockButton from '../basic/BlockButton';
 
 function Start(props) {
 

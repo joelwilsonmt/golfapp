@@ -11,10 +11,10 @@ import RemoveIcon from '@material-ui/icons/Remove';
 
 
 
-import BottomNavBar from './BottomNavBar';
-import BlockButton from './BlockButton';
+import BottomNavBar from '../basic/BottomNavBar';
+import BlockButton from '../basic/BlockButton';
 import RoundTable from './RoundTable';
-import {ProviderContext} from '../ContextProviders/Provider';
+import {ProviderContext} from '../../ContextProviders/Provider';
 
 
 function RoundReview(props) {

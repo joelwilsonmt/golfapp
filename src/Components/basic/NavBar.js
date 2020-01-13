@@ -18,6 +18,8 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
+import theme from "../../styles/theme"
+
 
 const styles = {
   root: {
@@ -40,8 +42,9 @@ function Home(props) {
   const [open, toggleDrawer] = useState(false);
   const icon = true;
   const { classes } = props;
-  return (
-    <div>
+  return [
+    <div style={{height: theme.headerHeight + theme.themeSpacingUnit}} />,
+    <div style={{position: "absolute", top: 0, width: "100vw"}}>
     <Drawer open={open} onClose={() => toggleDrawer(false)}>
           <div
             tabIndex={0}
@@ -72,7 +75,7 @@ function Home(props) {
           </Paper>
           </div>
     </Drawer>
-    <AppBar position="static">
+    <AppBar style={{height: theme.headerHeight}} position="static">
         <Toolbar>
         <IconButton onClick={() => toggleDrawer(!open)} className={classes.menuButton} color="inherit" aria-label="Menu">
         {icon ? <img width="30" src='https://i2.wp.com/justinrussogolfacademy.com/files/2015/11/jr-favicon.png'/> : <MenuIcon/>}
@@ -82,8 +85,8 @@ function Home(props) {
             </Typography>
         </Toolbar>
       </AppBar>
-      </div>
-  );
+  </div>
+  ];
 }
 
 Home.propTypes = {

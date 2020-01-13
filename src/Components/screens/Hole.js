@@ -1,12 +1,12 @@
 import React,  { useState } from 'react';
-import Counter from './Counter';
-import SelectBox from './SelectBox';
-import BlockButton from './BlockButton';
+import Counter from '../basic/Counter';
+import SelectBox from '../basic/SelectBox';
+import BlockButton from '../basic/BlockButton';
 import Button from '@material-ui/core/Button';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
-import CustomDialog from './CustomDialog';
-import Loading from './Loading';
+import CustomDialog from '../basic/CustomDialog';
+import Loading from '../basic/Loading';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { withStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
@@ -19,7 +19,7 @@ import Redo from '@material-ui/icons/Replay';
 import styled from "styled-components";
 
 import Camera from './Camera';
-import Image from './Image';
+import Image from '../basic/Image';
 
 const HoleNumberText = styled.div`
   padding-top: 15%;

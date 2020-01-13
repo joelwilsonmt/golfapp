@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import GoogleMapReact from 'google-map-react';
 import Typography from '@material-ui/core/Typography';
-import Loading from './Loading';
-import usePosition from './hooks/usePosition';
+import Loading from '../basic/Loading';
+import usePosition from '../hooks/usePosition';
 
 const offset = {
   position: "relative",

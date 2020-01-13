@@ -6,8 +6,8 @@ import Fab from '@material-ui/core/Fab';
 import Redo from '@material-ui/icons/Replay';
 
 
-import Image from './Image';
-import BlockButton from './BlockButton';
+import Image from '../basic/Image';
+import BlockButton from '../basic/BlockButton';
 
 
 function Camera(props) {

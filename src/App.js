@@ -1,16 +1,16 @@
 
 import React from 'react';
 import './App.css';
-import Hole from './Components/Hole';
-import Home from './Components/Home';
-import NavBar from './Components/NavBar';
-import ScoreCardWrapper from './Components/ScoreCardWrapper';
-import Start from './Components/Start';
-import Welcome from './Components/Welcome';
-import NewRound from './Components/NewRound';
-import RoundReview from './Components/RoundReview';
-import ListRounds from './Components/ListRounds';
-import ListUsers from './Components/ListUsers';
+import Hole from './Components/screens/Hole';
+import Home from './Components/screens/Home';
+import NavBar from './Components/basic/NavBar';
+import ScoreCardWrapper from './Components/basic/ScoreCardWrapper';
+import Start from './Components/screens/Start';
+import Welcome from './Components/screens/Welcome';
+import NewRound from './Components/screens/NewRound';
+import RoundReview from './Components/screens/RoundReview';
+import ListRounds from './Components/screens/ListRounds';
+import ListUsers from './Components/screens/ListUsers';
 import { BrowserRouter, Route} from "react-router-dom";
 import { AnimatedSwitch } from 'react-router-transition';
 import {ProviderContext} from './ContextProviders/Provider';

@@ -1,8 +1,8 @@
 import React,  { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import PopUp from './PopUp';
-import GolfAndGo from './../images/golf-and-go.jpg';
+import PopUp from '../basic/PopUp';
+import GolfAndGo from '../../images/golf-and-go.jpg';
 
 function NewGame(props) {
   const [open, toggleOpen] = useState(false);

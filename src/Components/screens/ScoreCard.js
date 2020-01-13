@@ -18,10 +18,10 @@ import { withStyles } from '@material-ui/core/styles';
 import { StickyContainer, Sticky } from 'react-sticky';
 import axios from 'axios';
 
-import Loading from './Loading';
-import CustomDialog from './CustomDialog';
+import Loading from '../basic/Loading';
+import CustomDialog from '../basic/CustomDialog';
 import RecoverGame from './RecoverGame';
-import {ProviderContext} from './../ContextProviders/Provider';
+import {ProviderContext} from '../../ContextProviders/Provider';
 require('dotenv').config();
 
 const styles = theme => ({
