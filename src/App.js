@@ -15,15 +15,27 @@ import { BrowserRouter, Route} from "react-router-dom";
 import { AnimatedSwitch } from 'react-router-transition';
 import {ProviderContext} from './ContextProviders/Provider';
 
+import Frame from "./Components/templates/Frame"
+
 require('dotenv').config();
 
 function App(props) {
-
+  const tabs = [{
+    name: "Score Card",
+    icon: <p>thisss</p>,
+    component: <p>screen 1</p>
+  },
+  {
+    name: "Map",
+    icon: <p>ewwwww</p>,
+  component: <p>screen 2</p>
+  }];
   return (
     <ProviderContext.Consumer>
       {game =>
         <BrowserRouter>
-          <NavBar game={game}/>
+          {/*<Frame game={game} screens={tabs}>*/}
+          <Frame game={game}>
           <Route path="/" exact render={(props) => <Home game={game} {...props}/>}/>
           <Route path="/:coursename/hole/:holeNumber" render={(props) => <Hole game={game} {...props}/>} />
           <Route path="/scorecard/:courseName" render={(props) => <ScoreCardWrapper game={game} {...props}/>}/>
@@ -33,6 +45,7 @@ function App(props) {
           <Route path="/listusers/" render={(props) => <ListUsers game={game} {...props}/>}/>
           <Route path="/welcome/" component={Welcome} />
           <Route path="/newround/" render={(props) => <NewRound game={game} {...props}/>} />
+          </Frame>
         </BrowserRouter>
       }
     </ProviderContext.Consumer>
