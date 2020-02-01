@@ -24,11 +24,12 @@ import RoundTable from '../screens/RoundTable';
 import RecoverGame from '../screens/RecoverGame';
 import {ProviderContext} from '../../ContextProviders/Provider';
 import BottomNavBar from './BottomNavBar';
+import Frame from '../templates/Frame'
 require('dotenv').config();
 
 
-function ScoreCardWrapper(props) {
-  const [tab, switchTab] = useState("Score Card");
+function ScoreCardWrapper({game}) {
+  const [tab, switchTab] = useState(0);
   const tabs = [{
     name: "Score Card",
     icon: <RestoreIcon />,
@@ -50,12 +51,11 @@ function ScoreCardWrapper(props) {
   }];
   const bottom = {paddingBottom: '56px'}
   return (
-    <div>
-      <div style={bottom}>
-        {tabs.map(screen => screen.name === tab ? screen.component : null)}
-      </div>
-      <BottomNavBar currentTab={tab} tabs={tabs} onChange={switchTab}/>
-    </div>
+    <ProviderContext.Consumer>
+      {game =>
+        <Frame tabs={tabs} game={game} />
+      }
+    </ProviderContext.Consumer>
   );
 }
 

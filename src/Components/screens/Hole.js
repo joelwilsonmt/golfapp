@@ -20,6 +20,7 @@ import styled from "styled-components";
 
 import Camera from './Camera';
 import Image from '../basic/Image';
+import Frame from '../templates/Frame'
 
 const HoleNumberText = styled.div`
   padding-top: 15%;
@@ -153,7 +154,7 @@ function Hole(props) {
 
   // ----------------------------------------------------- Begin Return Function -----------------------------------------
   return (
-    <div>
+    <Frame game={props.game}>
       <Loading open={loading}/>
       <Button
       variant="outlined"
@@ -352,7 +353,7 @@ function Hole(props) {
   </DialogActions>
   </Dialog>
 
-    </div>
+</Frame>
   );
 }
 

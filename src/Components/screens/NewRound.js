@@ -6,6 +6,9 @@ import Loading from '../basic/Loading';
 import Grid from '@material-ui/core/Grid';
 import { Redirect } from "react-router-dom";
 import axios from 'axios';
+import Frame from '../templates/Frame'
+import index from "./index.js"
+
 require('dotenv').config();
 
 function NewRound(props) {
@@ -100,9 +103,9 @@ function NewRound(props) {
         nextDialog(dialogIndex+1);}
       }/>
     </Grid>
-
+    
   return (
-    <div>
+    <Frame game={props.game}>
       <Typography align="center" variant='h2' gutterBottom>New Round</Typography>
       <Typography align="center" variant='h3' gutterBottom>How Many Players?</Typography>
       <Grid container spacing={16}>
@@ -236,7 +239,7 @@ function NewRound(props) {
 
 
     {redirect ? <Redirect to={{ pathname: `/scorecard/${courseName}` }} /> : null}
-  </div>
+  </Frame>
   );
 }
 

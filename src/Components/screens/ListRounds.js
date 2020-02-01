@@ -15,6 +15,7 @@ import BottomNavBar from '../basic/BottomNavBar';
 import BlockButton from '../basic/BlockButton';
 import RoundTable from './RoundTable';
 import {ProviderContext} from '../../ContextProviders/Provider';
+import Frame from '../templates/Frame'
 
 
 export default (props) => {
@@ -42,7 +43,7 @@ export default (props) => {
     toggleRedirect(true)
   }
   return (
-    <div>
+    <Frame game={props.game}>
       <p>Getting rounds by username {name}</p>
       <Fab onClick={() => getPlayerData()}>GPD</Fab>
       {playerData ? playerData.map((round, index) => {
@@ -63,6 +64,6 @@ export default (props) => {
       }) : null}
       <Loading open={loading} />
       {redirect ? <Redirect to={{ pathname: `/scorecard/${playerData[playerDataIndex].courseName}` }} /> : null}
-    </div>
+    </Frame>
   );
 }

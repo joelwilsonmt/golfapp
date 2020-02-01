@@ -2,11 +2,12 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import RecoverGame from './RecoverGame';
 import {ProviderContext} from '../../ContextProviders/Provider';
+import Frame from '../templates/Frame'
 
-function Home(props) {
+function Home({game}) {
 
   return (
-    <div>
+    <Frame game={game}>
 
       <ul>
       <li>
@@ -37,7 +38,7 @@ function Home(props) {
         Name:
       </li>
     </ul>
-  </div>
+  </Frame>
   );
 }
 // <ProviderContext.Consumer>

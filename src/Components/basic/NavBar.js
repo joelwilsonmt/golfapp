@@ -43,8 +43,7 @@ function Home(props) {
   const icon = true;
   const { classes } = props;
   return [
-    <div style={{height: theme.headerHeight + theme.themeSpacingUnit}} />,
-    <div style={{position: "absolute", top: 0, width: "100vw"}}>
+    <div>
     <Drawer open={open} onClose={() => toggleDrawer(false)}>
           <div
             tabIndex={0}
@@ -81,7 +80,7 @@ function Home(props) {
         {icon ? <img width="30" src='https://i2.wp.com/justinrussogolfacademy.com/files/2015/11/jr-favicon.png'/> : <MenuIcon/>}
           </IconButton>
             <Typography inline className={classes.title} variant="h5">
-              {`406.golf`} {props.game.courseName ? ` - ${props.game.courseName}` : null}
+              {`406.golf`} {props.game && props.game.courseName ? ` - ${props.game.courseName}` : null}
             </Typography>
         </Toolbar>
       </AppBar>

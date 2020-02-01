@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Golf and Go Summer 2019</name>
+    <description/>
+    <NetworkLink>
+      <name>Golf and Go Summer 2019</name>
+      <Link>
+        <href>http://www.google.com/maps/d/u/0/kml?mid=11cQAKnw3nIz3k2trzxUtP5vgSGOO_YgW</href>
+      </Link>
+    </NetworkLink>
+  </Document>
+</kml>
