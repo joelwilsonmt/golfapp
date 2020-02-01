@@ -1,15 +1,16 @@
 import React,  { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import PopUp from './PopUp';
-import GolfAndGo from './../images/golf-and-go.jpg';
+import PopUp from '../basic/PopUp';
+import GolfAndGo from '../../images/golf-and-go.jpg';
+import Frame from '../templates/Frame'
 
 function NewGame(props) {
   const [open, toggleOpen] = useState(false);
   const password = "59601"
   const width = {width: '100%'}
   return (
-    <div align="center">
+    <Frame game={props.game} align="center">
       <PopUp
       toggleOpen={() => toggleOpen(!open)}
       input
@@ -27,7 +28,7 @@ function NewGame(props) {
       color="primary">
       Get Started
     </Button>
-    </div>
+    </Frame>
 
   );
 }

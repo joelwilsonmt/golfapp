@@ -10,11 +10,12 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-import Loading from './Loading'
-import BottomNavBar from './BottomNavBar';
-import BlockButton from './BlockButton';
+import Loading from '../basic/Loading'
+import BottomNavBar from '../basic/BottomNavBar';
+import BlockButton from '../basic/BlockButton';
 import RoundTable from './RoundTable';
-import {ProviderContext} from '../ContextProviders/Provider';
+import {ProviderContext} from '../../ContextProviders/Provider';
+import Frame from '../templates/Frame'
 
 
 export default (props) => {
@@ -38,7 +39,7 @@ export default (props) => {
     getPlayerNames()
   }, [])
   return (
-    <div>
+    <Frame game={props.game}>
       <p>Getting all user names:</p>
       <Fab onClick={() => getData()}>DATA</Fab>
       <Fab onClick={() => getPlayerNames()}>NAMES</Fab>
@@ -51,6 +52,6 @@ export default (props) => {
       }) : null}
       <Loading open={loading} />
 
-    </div>
+    </Frame>
   );
 }

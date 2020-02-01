@@ -1,11 +1,12 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import BlockButton from './BlockButton';
+import BlockButton from '../basic/BlockButton';
+import Frame from '../templates/Frame'
 
 function Start(props) {
 
   return (
-    <div>
+    <Frame game={props.game}>
       <Typography variant="body1">
         Thank you for confirming your humanity! Please choose from the menu below:
       </Typography>
@@ -20,7 +21,7 @@ function Start(props) {
       <BlockButton
       title="Review Past Rounds"/>
 
-    </div>
+  </Frame>
   );
 }
 

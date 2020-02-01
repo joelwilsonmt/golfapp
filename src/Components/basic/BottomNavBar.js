@@ -17,12 +17,15 @@ function BottomNavBar(props) {
   return (
     <BottomNavigation
       value={props.currentTab}
-      onChange={(e, value) => props.onChange(value)}
+      onChange={(e, value) => {
+        console.log("value: ", value)
+        props.onChange(value)}
+      }
       showLabels
       className={classes.root}
     >
     {props.tabs.map((tab, i) =>
-      <BottomNavigationAction key={i} value={tab.name} label={tab.name} icon={tab.icon} />
+      <BottomNavigationAction key={i} value={i} label={tab.name} icon={tab.icon} />
     )}
     </BottomNavigation>
   );

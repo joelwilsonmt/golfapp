@@ -11,18 +11,19 @@ import RemoveIcon from '@material-ui/icons/Remove';
 
 
 
-import BottomNavBar from './BottomNavBar';
-import BlockButton from './BlockButton';
+import BottomNavBar from '../basic/BottomNavBar';
+import BlockButton from '../basic/BlockButton';
 import RoundTable from './RoundTable';
-import {ProviderContext} from '../ContextProviders/Provider';
+import {ProviderContext} from '../../ContextProviders/Provider';
+import Frame from '../templates/Frame'
 
 
 function RoundReview(props) {
-  const [tab, switchTab] = useState("FINISH");
-  const tabs = [{
-    name: "FINISH",
-    icon: <RestoreIcon />
-  }]
+  // const [tab, switchTab] = useState("FINISH");
+  // const tabs = [{
+  //   name: "FINISH",
+  //   icon: <RestoreIcon />
+  // }]
   const bottom = {paddingBottom: '36px'}
   const handleClick = () => {
     console.log("clearing local storage...");
@@ -35,7 +36,7 @@ function RoundReview(props) {
     bottom: 0,
   };
   return (
-    <div>
+    <Frame game={props.game}>
       <div style={bottom}>
         <ProviderContext.Consumer>
         {game => <RoundTable game={game} />}
@@ -48,7 +49,7 @@ function RoundReview(props) {
           onClick={() => handleClick()}
           />
       </AppBar>
-    </div>
+    </Frame>
   );
 }
 // link={`/`}
