@@ -20,7 +20,8 @@ import Frame from '../templates/Frame'
 
 export default (props) => {
   const [loading, toggleLoading] = useState(true)
-  const [redirect, toggleRedirect] = useState(false);
+  const [redirect, toggleRedirect] = useState(false)
+  const [activeGameChoice, toggleActiveGameChoice] = useState(false)
   const name = props.match.params.name
   const [playerData, setPlayerData] = useState(null)
   const [playerDataIndex, setPlayerDataIndex] = useState(0)
@@ -34,11 +35,11 @@ export default (props) => {
   useEffect(() => {
     getPlayerData()
   }, [])
-  const getGameById = async (index) => {
+  const getGameById = async (index, active) => {
     setPlayerDataIndex(index)
     toggleLoading(true)
+    toggleActiveGameChoice(active)
     const game = await props.game.getGameById(playerData[index].gameId)
-    console.log("current game for user accessed: should be same coursename etc. ", game)
     props.game.recoverGame(game)
     toggleRedirect(true)
   }
@@ -53,17 +54,28 @@ export default (props) => {
             <p>ID) {round.gameId}</p>
             <p>{round.active ? 'Active!' : 'Not Active.'}</p>
             <Button
-              onClick={() => getGameById(index)}
+              onClick={() => {
+                  getGameById(index, round.active)
+                }
+              }
               color="primary"
               variant="contained"
             >
-              Resume this game
+              {round.active ? 'Resume this game' : 'Review this game'}
             </Button>
           </div>
         )
       }) : null}
       <Loading open={loading} />
-      {redirect ? <Redirect to={{ pathname: `/scorecard/${playerData[playerDataIndex].courseName}` }} /> : null}
+      {redirect ?
+        <Redirect
+          to={{
+            pathname: activeGameChoice ?
+            `/scorecard/${playerData[playerDataIndex].courseName}`
+            : `/roundreview/`
+          }} 
+        />
+          : null}
     </Frame>
   );
 }
